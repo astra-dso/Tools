@@ -1,339 +1,148 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Undian Multi-Hadiah</title>
-  <style>
-    :root{
-      --bg:#0f172a; --card:#111827; --muted:#9ca3af; --text:#e5e7eb; --accent:#22c55e; --danger:#ef4444; --primary:#3b82f6;
-      --shadow:0 16px 40px rgba(0,0,0,.35);
-      --r:18px;
-    }
-    *{box-sizing:border-box}
-    body{margin:0;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Inter,Helvetica,Arial,sans-serif;background:linear-gradient(180deg,#0b1220,#0a1222 30%,#0d1528);color:var(--text)}
-    .wrap{max-width:1100px;margin:40px auto;padding:0 20px}
-    h1{font-size:clamp(24px,2.6vw,36px);margin:0 0 4px;font-weight:800;letter-spacing:.3px}
-    .muted{color:var(--muted)}
-    .row{display:grid;grid-template-columns:1.2fr .8fr;gap:24px;margin-top:24px}
-    .card{background:linear-gradient(180deg,rgba(17,24,39,.7),rgba(17,24,39,.9));border:1px solid rgba(148,163,184,.15);border-radius:var(--r);box-shadow:var(--shadow)}
-    .card-h{padding:16px 18px;border-bottom:1px solid rgba(148,163,184,.15);display:flex;align-items:center;justify-content:space-between}
-    .card-b{padding:18px}
-    .grid{display:grid;gap:12px}
-    .grid-2{grid-template-columns:1fr 1fr}
-    .grid-3{grid-template-columns:repeat(3,1fr)}
-    .input, .btn, .file{
-      border-radius:12px;border:1px solid rgba(148,163,184,.25);background:#0b1220;color:var(--text);
-      padding:10px 12px;font-size:14px
-    }
-    .file{background:#0b1220}
-    .btn{cursor:pointer;background:#0b1220;transition:.18s ease;display:inline-flex;align-items:center;gap:8px}
-    .btn.primary{background:var(--primary);border-color:rgba(255,255,255,.12)}
-    .btn.success{background:var(--accent);border-color:rgba(255,255,255,.12)}
-    .btn.ghost{background:transparent}
-    .btn:disabled{opacity:.6;cursor:not-allowed}
-    .flex{display:flex;gap:10px;flex-wrap:wrap}
-    .pill{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;border:1px solid rgba(148,163,184,.25);background:#0c1424;color:var(--text);font-size:12px}
-    .winner{
-      border:1px dashed rgba(148,163,184,.3);border-radius:14px;padding:10px 12px;display:flex;align-items:center;gap:12px;
-      background:linear-gradient(180deg,rgba(34,197,94,.08),rgba(34,197,94,.05))
-    }
-    .winner .badge{background:rgba(34,197,94,.15);color:#bbf7d0;border:1px solid rgba(34,197,94,.25);padding:4px 8px;border-radius:999px;font-size:12px}
-    .list{border-radius:12px;overflow:hidden;border:1px solid rgba(148,163,184,.15)}
-    .list-item{display:grid;grid-template-columns:48px 1fr 120px 120px;gap:12px;align-items:center;padding:10px 12px;border-bottom:1px solid rgba(148,163,184,.12)}
-    .list-item:nth-child(odd){background:rgba(255,255,255,.02)}
-    .k{font-size:12px;color:var(--muted)}
-    .t{font-weight:700}
-    .right{justify-self:end}
-    .spin{animation:spin 1s linear infinite}
-    @keyframes spin{to{transform:rotate(360deg)}}
-    @media (max-width:960px){.row{grid-template-columns:1fr}}
-  </style>
-</head>
-<body>
-  <div class="wrap">
-    <h1>Undian Multi‑Hadiah</h1>
-    <div class="muted">Transparan, adil, dan cepat. Import peserta & hadiah dari CSV, lalu undi per urutan.</div>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Farhan • Links</title>
+  <meta name="description" content="Link hub PMK, PKB, dan PTK — Farhan">
+  <meta property="og:title" content="Farhan • Links">
+  <meta property="og:description" content="Hub semua tautan: PMK, PKB, dan PTK">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://images.unsplash.com/photo-1542831371-29b0f74f9713?q=80&w=600&auto=format&fit=crop">
+  <meta name="theme-color" content="#0F5BA7">
 
-    <div class="row">
-      <!-- ===== LEFT: PRIZE QUEUE & DRAW ===== -->
-      <section class="card" id="prizeCard">
-        <div class="card-h">
-          <div><strong>Urutan Hadiah</strong> <span class="muted" id="summary"></span></div>
-          <div class="flex">
-            <button class="btn" id="btnLoadSample">Contoh Data</button>
-            <button class="btn" id="btnReset">Reset</button>
-            <button class="btn success" id="btnExport" disabled>Export Hasil</button>
-          </div>
-        </div>
-        <div class="card-b">
-          <div class="grid grid-3" style="margin-bottom:14px">
-            <div>
-              <div class="k">Peserta (CSV)</div>
-              <input type="file" accept=".csv" class="file" id="filePeserta" />
-            </div>
-            <div>
-              <div class="k">Hadiah (CSV)</div>
-              <input type="file" accept=".csv" class="file" id="fileHadiah" />
-            </div>
-            <div>
-              <div class="k">Mode</div>
-              <select class="input" id="mode">
-                <option value="unique">1 orang maksimal 1x menang</option>
-                <option value="allow-multi">Boleh menang lebih dari 1x</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="list" id="prizeList"></div>
-        </div>
-      </section>
-
-      <!-- ===== RIGHT: WINNERS PANEL ===== -->
-      <section class="card">
-        <div class="card-h">
-          <strong>Hasil / Pemenang</strong>
-          <button class="btn ghost" id="btnClearWinners">Bersihkan Tampilan</button>
-        </div>
-        <div class="card-b">
-          <div id="winnersPanel" class="grid"></div>
-        </div>
-      </section>
-    </div>
-
-    <p class="muted" style="margin-top:18px">Format CSV Peserta: <code>nama,npk,departemen</code> · Format CSV Hadiah: <code>urutan,nama,qty,keterangan</code></p>
-  </div>
-
-  <script>
-    // ===== Utilities =====
-    async function readCSVFile(file){
-      const text = await file.text();
-      return parseCSV(text);
-    }
-
-    function parseCSV(text){
-      // very small CSV parser (no quotes with commas handling). Keep simple for controlled input.
-      return text.trim().split(/\r?\n/).map(line=>line.split(',').map(s=>s.trim()));
-    }
-
-    function dl(filename, text){
-      const blob = new Blob([text], {type:'text/csv;charset=utf-8;'});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url; a.download = filename; document.body.appendChild(a); a.click();
-      setTimeout(()=>{URL.revokeObjectURL(url); a.remove();}, 500);
-    }
-
-    // Cryptographically-strong random int [0, max)
-    function randInt(max){
-      const arr = new Uint32Array(1);
-      window.crypto.getRandomValues(arr);
-      return arr[0] % max;
-    }
-
-    // Sample k unique items from an array without replacement using partial Fisher-Yates
-    function sampleK(arr, k){
-      const a = arr.slice();
-      const n = a.length;
-      const kk = Math.min(k, n);
-      for (let i = 0; i < kk; i++){
-        const j = i + randInt(n - i);
-        [a[i], a[j]] = [a[j], a[i]];
-      }
-      return a.slice(0, kk);
-    }
-
-    // ===== State =====
-    const state = {
-      participants: [], // {id, nama, npk, departemen, won:false}
-      prizes: [],       // {urutan, nama, qty, ket, drawn:false, winners:[]}
-      winnersLog: []    // [{urutan, prizeName, winner:{...}}]
-    };
-
-    // ===== DOM =====
-    const prizeList = document.getElementById('prizeList');
-    const winnersPanel = document.getElementById('winnersPanel');
-    const summaryEl = document.getElementById('summary');
-    const btnExport = document.getElementById('btnExport');
-
-    function refreshSummary(){
-      summaryEl.textContent = `· Peserta: ${state.participants.length} · Hadiah: ${state.prizes.length}`;
-      btnExport.disabled = state.winnersLog.length === 0;
-    }
-
-    function renderPrizeList(){
-      const rows = state.prizes
-        .sort((a,b)=>a.urutan-b.urutan)
-        .map(p=>{
-          const left = p.qty - (p.winners?.length||0);
-          const done = left <= 0;
-          return `<div class="list-item" data-urutan="${p.urutan}">
-            <div class="t">${p.urutan}</div>
-            <div>
-              <div class="t">${p.nama}</div>
-              <div class="k">${p.ket||''}</div>
-            </div>
-            <div class="right">
-              <span class="pill">Qty: <strong>${p.qty}</strong></span>
-            </div>
-            <div class="right">
-              <button class="btn primary" ${done?'disabled':''} data-action="draw">${done? 'Selesai' : 'Mulai Undian'}</button>
-            </div>
-          </div>`
-        }).join('');
-      prizeList.innerHTML = rows || `<div style="padding:16px" class="muted">Belum ada data hadiah.</div>`;
-    }
-
-    function pushWinnersUI(prize, winners){
-      const box = document.createElement('div');
-      box.className = 'grid';
-      box.style.marginBottom = '14px';
-      const title = document.createElement('div');
-      title.innerHTML = `<div class="winner"><span class="badge">Urutan ${prize.urutan}</span><strong style="margin-left:8px">${prize.nama}</strong><span class="k" style="margin-left:auto">${prize.ket||''}</span></div>`;
-      box.appendChild(title);
-
-      winners.forEach((w,i)=>{
-        const row = document.createElement('div');
-        row.className = 'list-item';
-        row.style.gridTemplateColumns = '48px 1fr 220px 140px';
-        row.innerHTML = `
-          <div class="t">${i+1}</div>
-          <div>
-            <div class="t">${w.nama}</div>
-            <div class="k">NPK: ${w.npk} · ${w.departemen}</div>
-          </div>
-          <div class="k">ID: ${w.id}</div>
-          <div class="right"><span class="pill">${prize.nama}</span></div>`;
-        box.appendChild(row);
-      });
-      winnersPanel.prepend(box);
-    }
-
-    function exportWinners(){
-      const header = ['urutan','nama_hadiah','keterangan','id','nama','npk','departemen'];
-      const lines = [header.join(',')];
-      state.winnersLog.forEach(r=>{
-        lines.push([r.urutan, r.prizeName, r.ket, r.winner.id, r.winner.nama, r.winner.npk, r.winner.departemen].join(','));
-      });
-      dl(`hasil-undian-${new Date().toISOString().slice(0,10)}.csv`, lines.join('\n'));
-    }
-
-    // ===== Actions =====
-    function drawPrize(urutan){
-      const prize = state.prizes.find(p=>p.urutan===urutan);
-      if (!prize) return;
-      const already = prize.winners?.length || 0;
-      const need = prize.qty - already;
-      if (need <= 0) return;
-
-      const mode = document.getElementById('mode').value;
-      const pool = state.participants.filter(p=>{
-        if (mode === 'unique') return !p.won; // belum menang apa pun
-        // allow multiple wins => hanya hindari duplikasi di prize yang sama
-        return !(prize.winners||[]).some(w=>w.id===p.id);
-      });
-
-      if (pool.length === 0){
-        alert('Tidak ada peserta yang memenuhi syarat untuk undian ini.');
-        return;
-      }
-
-      const winners = sampleK(pool, need);
-      prize.winners = (prize.winners||[]).concat(winners);
-      if (mode === 'unique') winners.forEach(w=>{ const idx = state.participants.findIndex(p=>p.id===w.id); if (idx>-1) state.participants[idx].won = true; });
-
-      // log
-      winners.forEach(w=> state.winnersLog.push({urutan: prize.urutan, prizeName: prize.nama, ket: prize.ket, winner: w}));
-
-      // UI
-      pushWinnersUI(prize, winners);
-      renderPrizeList();
-      refreshSummary();
-    }
-
-    // ===== Loaders =====
-    function loadSamples(){
-      state.participants = Array.from({length:250}).map((_,i)=>({
-        id: String(1000+i),
-        nama: `Peserta ${i+1}`,
-        npk: String(30000+i),
-        departemen: ['HR','Finance','IT','GA','OPS'][i%5],
-        won:false
-      }));
-      state.prizes = [
-        {urutan:1, nama:'TV 32"', qty:10, ket:'Smart TV'},
-        {urutan:2, nama:'HP Android', qty:5, ket:'RAM 6GB'},
-        {urutan:3, nama:'Voucher Belanja', qty:20, ket:'Rp100.000'}
-      ];
-      state.winnersLog = [];
-      winnersPanel.innerHTML = '';
-      renderPrizeList();
-      refreshSummary();
-    }
-
-    async function handlePesertaFile(file){
-      const rows = await readCSVFile(file); // [nama,npk,departemen]
-      const header = rows[0].map(h=>h.toLowerCase());
-      if (!(header.includes('nama') && header.includes('npk') && header.includes('departemen'))){
-        alert('Header CSV Peserta harus: nama,npk,departemen'); return;
-      }
-      const idxNama = header.indexOf('nama');
-      const idxNpk  = header.indexOf('npk');
-      const idxDep  = header.indexOf('departemen');
-      state.participants = rows.slice(1).filter(r=>r.length>=3).map((r,i)=>({
-        id: String(i+1), nama:r[idxNama], npk:r[idxNpk], departemen:r[idxDep], won:false
-      }));
-      refreshSummary();
-    }
-
-    async function handleHadiahFile(file){
-      const rows = await readCSVFile(file); // [urutan,nama,qty,keterangan]
-      const header = rows[0].map(h=>h.toLowerCase());
-      if (!(header.includes('urutan') && header.includes('nama') && header.includes('qty'))){
-        alert('Header CSV Hadiah minimal: urutan,nama,qty,(keterangan opsional)'); return;
-      }
-      const iU = header.indexOf('urutan');
-      const iN = header.indexOf('nama');
-      const iQ = header.indexOf('qty');
-      const iK = header.indexOf('keterangan');
-      state.prizes = rows.slice(1).filter(r=>r.length>=3).map(r=>({
-        urutan: Number(r[iU]), nama:r[iN], qty: Number(r[iQ]), ket: iK>-1? r[iK] : '' , winners:[]
-      })).sort((a,b)=>a.urutan-b.urutan);
-      state.winnersLog = [];
-      winnersPanel.innerHTML = '';
-      renderPrizeList();
-      refreshSummary();
-    }
-
-    // ===== Events =====
-    document.getElementById('btnLoadSample').addEventListener('click', loadSamples);
-    document.getElementById('btnReset').addEventListener('click', ()=>{ state.participants=[]; state.prizes=[]; state.winnersLog=[]; winnersPanel.innerHTML=''; renderPrizeList(); refreshSummary(); });
-    document.getElementById('btnClearWinners').addEventListener('click', ()=>{ winnersPanel.innerHTML=''; });
-    document.getElementById('btnExport').addEventListener('click', exportWinners);
-
-    document.getElementById('filePeserta').addEventListener('change', e=>{ if (e.target.files[0]) handlePesertaFile(e.target.files[0]); });
-    document.getElementById('fileHadiah').addEventListener('change', e=>{ if (e.target.files[0]) handleHadiahFile(e.target.files[0]); });
-
-    prizeList.addEventListener('click', e=>{
-      const btn = e.target.closest('button[data-action="draw"]');
-      if (!btn) return;
-      const row = e.target.closest('.list-item');
-      const urutan = Number(row?.dataset?.urutan);
-      btn.disabled = true; btn.innerHTML = '<span class="spin">⏳</span> Mengundi...';
-      setTimeout(()=>{ // kecilkan delay biar terasa animasi
-        drawPrize(urutan);
-        const p = state.prizes.find(p=>p.urutan===urutan);
-        if (p && (p.qty - (p.winners?.length||0))<=0){
-          btn.textContent = 'Selesai';
-        } else {
-          btn.textContent = 'Mulai Undian'; btn.disabled = false;
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+// Custom Tailwind config: brand colors
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            astra: { DEFAULT: '#0F5BA7', light: '#1B78D0', dark: '#0A3F74' },
+            daihatsu: { DEFAULT: '#E60012' },
+            slatex: { 50:'#F7FAFC', 900:'#0B1120' }
+          },
+          boxShadow: {
+            glow: '0 8px 30px rgba(15,91,167,0.35)',
+            soft: '0 10px 25px rgba(11,17,32,0.35)'
+          },
+          backgroundImage: {
+            'astra-gradient': 'radial-gradient(1200px 600px at 15% 10%, rgba(27,120,208,0.20), transparent), radial-gradient(800px 400px at 85% 20%, rgba(230,0,18,0.20), transparent), linear-gradient(160deg, #0B1120 0%, #0F5BA7 50%, #0B1120 100%)'
+          }
         }
-      }, 800);
-    });
+      }
+    }
+  </script>
 
-    // init
-    refreshSummary();
-    renderPrizeList();
+  <!-- Icons (Tabler) -->
+  https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css
+</head>
+<body class="min-h-screen bg-slatex-50 text-slate-800 dark:bg-slatex-900 dark:text-slate-100 transition-colors duration-300">
+
+  <!-- Background Decorative -->
+  <div class="fixed inset-0 -z-10 bg-astra-gradient"></div>
+
+  <!-- Page Container -->
+  <main class="max-w-xl mx-auto px-6 pt-16 pb-24">
+
+    <!-- Card -->
+    <section class="relative rounded-3xl bg-white/70 dark:bg-white/5 backdrop-blur-xl shadow-soft ring-1 ring-white/60 dark:ring-white/10 overflow-hidden">
+      <!-- Top Accent Bar -->
+      <div class="h-1.5 bg-gradient-to-r from-astra to-daihatsu"></div>
+
+      <!-- Header -->
+      <div class="p-8 md:p-10">
+        <div class="flex items-center gap-4">
+          <!-- Avatar -->
+          <img src="https://api.dicebear.com/8.x/initials/svg?seed=Farhan&backgroundType=gradient&fontFamily=Verdana&fontSize=38"
+               alt="Avatar Farhan"
+              font-bold tracking-tight">Anugrah Farhan Alamsyah</h1>
+            <p class="text-sm md:text-base text-slate-500 dark:text-slate-400">Link hub • PMK • PKB • PTK</p>
+          </div>
+
+          <!-- Theme Toggle -->
+          <button id="themeToggle"
+                  class="ml-auto inline-flex items-center gap-2 px-3 py-2 rounded-xl border border-white/40 dark:border-white/10 bg-white/60 dark:bg-white/10 text-slate-700 dark:text-slate-200 hover:bg-white dark:hover:bg-white/20 transition">
+            <i class="ti ti-sun dark:hidden"></i>
+            <i class="ti ti-moon hidden dark:inline"></i>
+            <span class="text-sm">Tema</span>
+          </button>
+        </div>
+
+        <!-- Bio / tagline -->
+        <p class="mt-6 text-slate-600 dark:text-slate-300">
+          Pusat tautan resmi yang rapi & modern—menggunakan palet warna Astra (biru) dan Daihatsu (merah).
+        </p>
+
+        <!-- Links -->
+        <div class="mt-8 space-y-4">
+          <!-- PMK -->
+          <a href="https://contoh.site/pmk" target="_blank" rel="noopener"
+             classbg-gradient-to-br from-astra to-astra-dark text-white grid place-items-center shadow">
+              <i class="ti ti-link"></i>
+            </div>
+            <div class="flex-1">
+              <div class="font-semibold">PMK</div>
+              <div class="text-xs text-slate-500 dark:text-slate-400">Portal Manajemen Keuangan</div>
+            </div>
+            <i class="ti ti-chevron-right text-slate-400 group-hover:text-astra"></i>
+          </a>
+
+          <!-- PKB -->
+          <a href="https://contoh.site/pkb" target="_blank" rel="noopener"
+            ed-xl bg-gradient-to-br from-astra-light to-astra text-white grid place-items-center shadow">
+              <i class="ti ti-building-bank"></i>
+            </div>
+            <div class="flex-1">
+              <div class="font-semibold">PKB</div>
+              <div class="text-xs text-slate-500 dark:text-slate-400">Portal Kredit & Bank</div>
+            </div>
+            <i class="ti ti-chevron-right text-slate-400 group-hover:text-astra"></i>
+          </a>
+
+          <!-- PTK -->
+          <a href="https://contoh.site/ptk" target="_blank" rel="noopener"
+             class="group flex items-center gap-3 w-full px-5 py-4 rounded-2xl bg-white/90 dark:bg-white/10 border border-white/60 dark:border-white/10 hover:border-astra/50 hover:shadow-glow hover:-translate-y-0.5 transition">
+            <div class="flex-shrink-0 w-10 h-10 rounded-xl bg-gradient-to-br from-daihatsu to-astra text-white grid place-items-center shadow">
+         <i class="ti ti-chevron-right text-slate-400 group-hover:text-astra"></i>
+          </a>
+        </div>
+
+        <!-- Footer / social -->
+        <div class="mt-10 flex items-center justify-between">
+          <div class="flex items-center gap-3 text-slate-500 dark:text-slate-400">
+            #<i class="ti ti-brand-instagram"></i></a>
+            #<i class="ti ti-brand-twitter"></i></a>
+            <a href="#" class="hover:text-astra"><i class="ti ti-brand-linkedin"></i></a>
+s="text-xs text-slate-500 dark:text-slate-400">
+            © <span id="year"></span> Farhan • Dibangun dengan Tailwind
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Floating action (optional) -->
+  #
+    <i class="ti ti-share"></i>
+    <span class="font-semibold">Bagikan</span>
+  </a>
+
+  <!-- Script -->
+  <script>
+    // Tahun otomatis
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Theme toggle (persist via localStorage)
+    const root = document.documentElement;
+    const key = 'theme';
+    const initial = localStorage.getItem(key);
+    if (initial === 'dark' || (!initial && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      root.classList.add('dark');
+    }
+    document.getElementById('themeToggle').addEventListener('click', () => {
+      root.classList.toggle('dark');
+      localStorage.setItem(key, root.classList.contains('dark') ? 'dark' : 'light');
+    });
   </script>
 </body>
-</html>
