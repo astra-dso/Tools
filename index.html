@@ -1,148 +1,217 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Farhan • Links</title>
-  <meta name="description" content="Link hub PMK, PKB, dan PTK — Farhan">
-  <meta property="og:title" content="Farhan • Links">
-  <meta property="og:description" content="Hub semua tautan: PMK, PKB, dan PTK">
-  <meta property="og:type" content="website">
-  <meta property="og:image" content="https://images.unsplash.com/photo-1542831371-29b0f74f9713?q=80&w=600&auto=format&fit=crop">
-  <meta name="theme-color" content="#0F5BA7">
+    <meta charset="UTF-8" />
+    <title>Link Portal</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- Tailwind CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-// Custom Tailwind config: brand colors
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            astra: { DEFAULT: '#0F5BA7', light: '#1B78D0', dark: '#0A3F74' },
-            daihatsu: { DEFAULT: '#E60012' },
-            slatex: { 50:'#F7FAFC', 900:'#0B1120' }
-          },
-          boxShadow: {
-            glow: '0 8px 30px rgba(15,91,167,0.35)',
-            soft: '0 10px 25px rgba(11,17,32,0.35)'
-          },
-          backgroundImage: {
-            'astra-gradient': 'radial-gradient(1200px 600px at 15% 10%, rgba(27,120,208,0.20), transparent), radial-gradient(800px 400px at 85% 20%, rgba(230,0,18,0.20), transparent), linear-gradient(160deg, #0B1120 0%, #0F5BA7 50%, #0B1120 100%)'
-          }
+    <!-- Tailwind CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        adBlue: "#003A70",  // Biru Astra-style
+                        adBlueSoft: "#0b4fa8",
+                        adLight: "#E6F2FF",
+                        adRed: "#E60012"
+                    }
+                }
+            }
         }
-      }
-    }
-  </script>
+    </script>
 
-  <!-- Icons (Tabler) -->
-  https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css
+    <style>
+        /* Glow halus di belakang kartu */
+        .card-glow {
+            box-shadow:
+                0 0 40px rgba(0, 58, 112, 0.7),
+                0 0 80px rgba(0, 0, 0, 0.8);
+        }
+
+        /* Animasi background halus */
+        .bg-animated {
+            background: radial-gradient(circle at 0% 0%, #0b4fa8 0, transparent 55%),
+                radial-gradient(circle at 100% 0%, #e60012 0, transparent 45%),
+                radial-gradient(circle at 50% 100%, #001b3d 0, #000 65%);
+        }
+    </style>
 </head>
-<body class="min-h-screen bg-slatex-50 text-slate-800 dark:bg-slatex-900 dark:text-slate-100 transition-colors duration-300">
 
-  <!-- Background Decorative -->
-  <div class="fixed inset-0 -z-10 bg-astra-gradient"></div>
+<body class="min-h-screen bg-animated text-white flex items-center justify-center px-4">
 
-  <!-- Page Container -->
-  <main class="max-w-xl mx-auto px-6 pt-16 pb-24">
-
-    <!-- Card -->
-    <section class="relative rounded-3xl bg-white/70 dark:bg-white/5 backdrop-blur-xl shadow-soft ring-1 ring-white/60 dark:ring-white/10 overflow-hidden">
-      <!-- Top Accent Bar -->
-      <div class="h-1.5 bg-gradient-to-r from-astra to-daihatsu"></div>
-
-      <!-- Header -->
-      <div class="p-8 md:p-10">
-        <div class="flex items-center gap-4">
-          <!-- Avatar -->
-          <img src="https://api.dicebear.com/8.x/initials/svg?seed=Farhan&backgroundType=gradient&fontFamily=Verdana&fontSize=38"
-               alt="Avatar Farhan"
-              font-bold tracking-tight">Anugrah Farhan Alamsyah</h1>
-            <p class="text-sm md:text-base text-slate-500 dark:text-slate-400">Link hub • PMK • PKB • PTK</p>
-          </div>
-
-          <!-- Theme Toggle -->
-          <button id="themeToggle"
-                  class="ml-auto inline-flex items-center gap-2 px-3 py-2 rounded-xl border border-white/40 dark:border-white/10 bg-white/60 dark:bg-white/10 text-slate-700 dark:text-slate-200 hover:bg-white dark:hover:bg-white/20 transition">
-            <i class="ti ti-sun dark:hidden"></i>
-            <i class="ti ti-moon hidden dark:inline"></i>
-            <span class="text-sm">Tema</span>
-          </button>
+    <main
+        class="w-full max-w-md relative">
+        <!-- Ring animasi di belakang avatar -->
+        <div class="absolute -top-16 left-1/2 -translate-x-1/2">
+            <div class="w-40 h-40 rounded-full bg-gradient-to-br from-adBlueSoft via-adBlue to-adRed opacity-40 blur-3xl animate-pulse">
+            </div>
         </div>
 
-        <!-- Bio / tagline -->
-        <p class="mt-6 text-slate-600 dark:text-slate-300">
-          Pusat tautan resmi yang rapi & modern—menggunakan palet warna Astra (biru) dan Daihatsu (merah).
-        </p>
-
-        <!-- Links -->
-        <div class="mt-8 space-y-4">
-          <!-- PMK -->
-          <a href="https://contoh.site/pmk" target="_blank" rel="noopener"
-             classbg-gradient-to-br from-astra to-astra-dark text-white grid place-items-center shadow">
-              <i class="ti ti-link"></i>
+        <!-- Card utama -->
+        <section
+            class="relative bg-white/5 border border-white/10 backdrop-blur-xl rounded-3xl p-6 pt-16 sm:p-8 sm:pt-20 card-glow">
+            <!-- Avatar / logo -->
+            <div class="absolute -top-10 left-1/2 -translate-x-1/2">
+                <div
+                    class="w-20 h-20 rounded-3xl bg-gradient-to-br from-adBlue via-adBlueSoft to-adRed border border-white/50 flex items-center justify-center text-3xl font-black tracking-tight">
+                    LG
+                </div>
             </div>
-            <div class="flex-1">
-              <div class="font-semibold">PMK</div>
-              <div class="text-xs text-slate-500 dark:text-slate-400">Portal Manajemen Keuangan</div>
+
+            <!-- Profil / Judul -->
+            <header class="text-center space-y-2 mb-8">
+                <h1 class="text-2xl sm:text-3xl font-semibold tracking-tight">
+                    Link Gateway
+                </h1>
+                <p class="text-sm text-adLight/80">
+                    Satu portal untuk akses cepat ke PMK, PKB, dan PTK.
+                </p>
+            </header>
+
+            <!-- 3 Link utama -->
+            <div class="space-y-4">
+                <!-- PMK -->
+                <a href="https://contoh-domain.com/pmk" target="_blank" rel="noopener"
+                    class="link-btn group">
+                    <div
+                        class="flex items-center justify-between w-full px-4 py-3 rounded-2xl bg-gradient-to-r from-adBlueSoft/90 via-adBlue to-adBlueSoft/90 border border-white/10 shadow-lg shadow-black/40 hover:shadow-xl hover:shadow-black/60 transition-all duration-200">
+                        <div class="flex items-center gap-3">
+                            <div
+                                class="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center group-hover:scale-105 transition-transform">
+                                <!-- Icon -->
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5"
+                                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        stroke-width="1.5"
+                                        d="M3 7.5h18M3 12h12M3 16.5h6" />
+                                </svg>
+                            </div>
+                            <div class="text-left">
+                                <div class="text-sm font-semibold tracking-wide">
+                                    Portal PMK
+                                </div>
+                                <div class="text-xs text-adLight/80">
+                                    Akses modul & informasi PMK.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-1 text-xs font-medium text-adLight">
+                            Buka
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                class="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform"
+                                fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    stroke-width="1.5"
+                                    d="M9 5h10M19 5v10M19 5L5 19" />
+                            </svg>
+                        </div>
+                    </div>
+                </a>
+
+                <!-- PKB -->
+                <a href="https://contoh-domain.com/pkb" target="_blank" rel="noopener"
+                    class="link-btn group">
+                    <div
+                        class="flex items-center justify-between w-full px-4 py-3 rounded-2xl bg-gradient-to-r from-adBlue/90 via-slate-900/90 to-adBlue/90 border border-white/10 shadow-lg shadow-black/40 hover:shadow-xl hover:shadow-black/60 transition-all duration-200">
+                        <div class="flex items-center gap-3">
+                            <div
+                                class="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center group-hover:scale-105 transition-transform">
+                                <!-- Icon -->
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5"
+                                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        stroke-width="1.5"
+                                        d="M12 6v12m-6-6h12" />
+                                </svg>
+                            </div>
+                            <div class="text-left">
+                                <div class="text-sm font-semibold tracking-wide">
+                                    Portal PKB
+                                </div>
+                                <div class="text-xs text-adLight/80">
+                                    Pengembangan kompetensi & pelatihan.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-1 text-xs font-medium text-adLight">
+                            Buka
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                class="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform"
+                                fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    stroke-width="1.5"
+                                    d="M9 5h10M19 5v10M19 5L5 19" />
+                            </svg>
+                        </div>
+                    </div>
+                </a>
+
+                <!-- PTK -->
+                <a href="https://contoh-domain.com/ptk" target="_blank" rel="noopener"
+                    class="link-btn group">
+                    <div
+                        class="flex items-center justify-between w-full px-4 py-3 rounded-2xl bg-gradient-to-r from-adRed/80 via-adRed/90 to-adBlue/90 border border-white/10 shadow-lg shadow-black/40 hover:shadow-xl hover:shadow-black/60 transition-all duration-200">
+                        <div class="flex items-center gap-3">
+                            <div
+                                class="w-9 h-9 rounded-xl bg-white/15 flex items-center justify-center group-hover:scale-105 transition-transform">
+                                <!-- Icon -->
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5"
+                                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        stroke-width="1.5"
+                                        d="M5 12h14M5 12l4-4m-4 4 4 4" />
+                                </svg>
+                            </div>
+                            <div class="text-left">
+                                <div class="text-sm font-semibold tracking-wide">
+                                    Portal PTK
+                                </div>
+                                <div class="text-xs text-adLight/90">
+                                    Data & layanan terkait PTK.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-1 text-xs font-medium text-adLight">
+                            Buka
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                class="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform"
+                                fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    stroke-width="1.5"
+                                    d="M9 5h10M19 5v10M19 5L5 19" />
+                            </svg>
+                        </div>
+                    </div>
+                </a>
             </div>
-            <i class="ti ti-chevron-right text-slate-400 group-hover:text-astra"></i>
-          </a>
 
-          <!-- PKB -->
-          <a href="https://contoh.site/pkb" target="_blank" rel="noopener"
-            ed-xl bg-gradient-to-br from-astra-light to-astra text-white grid place-items-center shadow">
-              <i class="ti ti-building-bank"></i>
-            </div>
-            <div class="flex-1">
-              <div class="font-semibold">PKB</div>
-              <div class="text-xs text-slate-500 dark:text-slate-400">Portal Kredit & Bank</div>
-            </div>
-            <i class="ti ti-chevron-right text-slate-400 group-hover:text-astra"></i>
-          </a>
+            <!-- Footer kecil -->
+            <footer class="mt-8 text-center text-[10px] text-adLight/70">
+                &copy; <span id="year"></span> Link Gateway &bull; Astra-style UI
+            </footer>
+        </section>
+    </main>
 
-          <!-- PTK -->
-          <a href="https://contoh.site/ptk" target="_blank" rel="noopener"
-             class="group flex items-center gap-3 w-full px-5 py-4 rounded-2xl bg-white/90 dark:bg-white/10 border border-white/60 dark:border-white/10 hover:border-astra/50 hover:shadow-glow hover:-translate-y-0.5 transition">
-            <div class="flex-shrink-0 w-10 h-10 rounded-xl bg-gradient-to-br from-daihatsu to-astra text-white grid place-items-center shadow">
-         <i class="ti ti-chevron-right text-slate-400 group-hover:text-astra"></i>
-          </a>
-        </div>
+    <script>
+        // Tahun dinamis
+        document.getElementById("year").textContent = new Date().getFullYear();
 
-        <!-- Footer / social -->
-        <div class="mt-10 flex items-center justify-between">
-          <div class="flex items-center gap-3 text-slate-500 dark:text-slate-400">
-            #<i class="ti ti-brand-instagram"></i></a>
-            #<i class="ti ti-brand-twitter"></i></a>
-            <a href="#" class="hover:text-astra"><i class="ti ti-brand-linkedin"></i></a>
-s="text-xs text-slate-500 dark:text-slate-400">
-            © <span id="year"></span> Farhan • Dibangun dengan Tailwind
-          </div>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <!-- Floating action (optional) -->
-  #
-    <i class="ti ti-share"></i>
-    <span class="font-semibold">Bagikan</span>
-  </a>
-
-  <!-- Script -->
-  <script>
-    // Tahun otomatis
-    document.getElementById('year').textContent = new Date().getFullYear();
-
-    // Theme toggle (persist via localStorage)
-    const root = document.documentElement;
-    const key = 'theme';
-    const initial = localStorage.getItem(key);
-    if (initial === 'dark' || (!initial && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-      root.classList.add('dark');
-    }
-    document.getElementById('themeToggle').addEventListener('click', () => {
-      root.classList.toggle('dark');
-      localStorage.setItem(key, root.classList.contains('dark') ? 'dark' : 'light');
-    });
-  </script>
+        // Animasi klik kecil (scale in/out)
+        document.querySelectorAll(".link-btn").forEach(btn => {
+            btn.addEventListener("mousedown", () => {
+                btn.classList.add("scale-[0.97]");
+            });
+            btn.addEventListener("mouseup", () => {
+                btn.classList.remove("scale-[0.97]");
+            });
+            btn.addEventListener("mouseleave", () => {
+                btn.classList.remove("scale-[0.97]");
+            });
+        });
+    </script>
 </body>
+
+</html>
