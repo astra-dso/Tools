@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="UTF-8" />
-  <title>Gemini Modern Chat</title>
+  <title>Gemini Modern Chat (Light)</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <!-- Bootstrap 5 CSS -->
@@ -22,18 +22,17 @@
 
   <style>
     :root {
-      --bg-body: #020617;
-      --bg-surface: #020617;
-      --bg-panel: #020617;
-      --bg-chat: #020617;
-      --border-soft: rgba(148, 163, 184, 0.35);
-      --accent: #38bdf8;
-      --accent-soft: rgba(56, 189, 248, 0.15);
-      --accent-soft-strong: rgba(56, 189, 248, 0.25);
-      --text-main: #e5e7eb;
-      --text-muted: #7c8aa0;
-      --bubble-user: linear-gradient(135deg, #0ea5e9, #38bdf8);
-      --bubble-ai: #020617;
+      --bg-body: #f3f4f6;
+      --bg-panel: #f9fafb;
+      --bg-chat: #ffffff;
+      --border-soft: #e5e7eb;
+      --accent: #2563eb;
+      --accent-soft: rgba(37, 99, 235, 0.08);
+      --accent-soft-strong: rgba(37, 99, 235, 0.16);
+      --text-main: #111827;
+      --text-muted: #6b7280;
+      --bubble-user: linear-gradient(135deg, #2563eb, #3b82f6);
+      --bubble-ai: #f9fafb;
       --radius-xl: 24px;
       --radius-lg: 18px;
     }
@@ -42,7 +41,8 @@
       box-sizing: border-box;
     }
 
-    html, body {
+    html,
+    body {
       height: 100%;
     }
 
@@ -50,8 +50,8 @@
       margin: 0;
       font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       background:
-        radial-gradient(circle at top, rgba(56, 189, 248, 0.12), transparent 55%),
-        radial-gradient(circle at bottom, rgba(79, 70, 229, 0.18), transparent 60%),
+        radial-gradient(circle at top, rgba(191, 219, 254, 0.6), transparent 55%),
+        radial-gradient(circle at bottom, rgba(219, 234, 254, 0.6), transparent 60%),
         var(--bg-body);
       color: var(--text-main);
     }
@@ -76,15 +76,14 @@
     /* LEFT PANEL (SIDEBAR) */
     .sidebar {
       flex: 0 0 290px;
-      background: radial-gradient(circle at top left, rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.95));
+      background: radial-gradient(circle at top left, #ffffff, #f9fafb);
       border-radius: var(--radius-xl);
-      border: 1px solid rgba(148, 163, 184, 0.25);
+      border: 1px solid var(--border-soft);
       padding: 18px 16px 14px;
       display: flex;
       flex-direction: column;
       gap: 16px;
-      box-shadow: 0 24px 70px rgba(15, 23, 42, 0.85);
-      backdrop-filter: blur(24px);
+      box-shadow: 0 20px 50px rgba(15, 23, 42, 0.08);
     }
 
     .sidebar-header {
@@ -100,22 +99,22 @@
       gap: 10px;
       padding: 8px 10px;
       border-radius: 999px;
-      background: rgba(15, 23, 42, 0.9);
-      border: 1px solid rgba(148, 163, 184, 0.25);
+      background: #ffffff;
+      border: 1px solid var(--border-soft);
     }
 
     .brand-icon {
       width: 32px;
       height: 32px;
       border-radius: 999px;
-      background: radial-gradient(circle at 10% -10%, #e5e7eb, #38bdf8);
+      background: radial-gradient(circle at 10% -10%, #eff6ff, #2563eb);
       display: flex;
       align-items: center;
       justify-content: center;
       font-weight: 700;
-      color: #020617;
+      color: #111827;
       font-size: 18px;
-      box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.4);
+      box-shadow: 0 0 0 1px rgba(148, 163, 184, 0.5);
     }
 
     .brand-text {
@@ -126,22 +125,22 @@
 
     .brand-text span:first-child {
       font-size: 0.78rem;
-      color: #9ca3af;
+      color: var(--text-muted);
     }
 
     .brand-text span:last-child {
       font-size: 0.95rem;
       font-weight: 600;
-      color: #e5e7eb;
+      color: #111827;
     }
 
     .pill-badge {
       font-size: 0.7rem;
       padding: 4px 8px;
       border-radius: 999px;
-      border: 1px solid rgba(52, 211, 153, 0.45);
-      background: rgba(22, 101, 52, 0.2);
-      color: #bbf7d0;
+      border: 1px solid rgba(22, 163, 74, 0.4);
+      background: rgba(34, 197, 94, 0.08);
+      color: #166534;
       display: inline-flex;
       align-items: center;
       gap: 4px;
@@ -153,14 +152,14 @@
       height: 6px;
       border-radius: 999px;
       background: #22c55e;
-      box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.25);
+      box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.35);
     }
 
     .sidebar-section-title {
       font-size: 0.78rem;
       text-transform: uppercase;
       letter-spacing: 0.08em;
-      color: #9ca3af;
+      color: var(--text-muted);
       margin-bottom: 4px;
     }
 
@@ -176,9 +175,9 @@
       font-size: 0.82rem;
       border-radius: 999px;
       padding: 7px 10px;
-      border: 1px solid rgba(148, 163, 184, 0.35);
-      background: rgba(15, 23, 42, 0.9);
-      color: #e5e7eb;
+      border: 1px solid var(--border-soft);
+      background: #ffffff;
+      color: #111827;
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -194,18 +193,19 @@
 
     .control-btn:hover {
       border-color: var(--accent);
-      background: rgba(15, 23, 42, 0.95);
-      box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.35);
+      background: #eff6ff;
+      box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.3);
     }
 
     .control-btn.danger {
-      border-color: rgba(248, 113, 113, 0.6);
-      color: #fecaca;
+      border-color: rgba(248, 113, 113, 0.7);
+      color: #b91c1c;
+      background: #fef2f2;
     }
 
     .control-btn.danger:hover {
-      background: rgba(127, 29, 29, 0.6);
-      box-shadow: 0 0 0 1px rgba(248, 113, 113, 0.7);
+      background: #fee2e2;
+      box-shadow: 0 0 0 1px rgba(248, 113, 113, 0.6);
     }
 
     /* SUGGESTIONS */
@@ -216,8 +216,8 @@
       gap: 6px;
       padding: 8px 10px;
       border-radius: 18px;
-      background: rgba(15, 23, 42, 0.95);
-      border: 1px dashed rgba(148, 163, 184, 0.45);
+      background: #ffffff;
+      border: 1px dashed var(--border-soft);
     }
 
     .suggestions-header {
@@ -237,8 +237,8 @@
       padding: 2px 8px;
       border-radius: 999px;
       border: none;
-      background: rgba(15, 23, 42, 0.9);
-      color: #e5e7eb;
+      background: #eff6ff;
+      color: #1d4ed8;
       display: inline-flex;
       align-items: center;
       gap: 4px;
@@ -247,7 +247,7 @@
     }
 
     .refresh-suggestions-btn:hover {
-      background: rgba(31, 41, 55, 0.9);
+      background: #dbeafe;
     }
 
     .suggestions {
@@ -263,9 +263,9 @@
       border-radius: 999px;
       font-size: 0.75rem;
       padding: 6px 9px;
-      background: rgba(15, 23, 42, 0.9);
-      border: 1px solid rgba(148, 163, 184, 0.4);
-      color: #e5e7eb;
+      background: #f9fafb;
+      border: 1px solid var(--border-soft);
+      color: #111827;
       cursor: pointer;
       transition: all 0.15s ease;
       text-align: left;
@@ -274,8 +274,8 @@
 
     .suggestion-chip:hover {
       border-color: var(--accent);
-      background: rgba(15, 23, 42, 0.98);
-      box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.4);
+      background: #eff6ff;
+      box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.3);
     }
 
     .sidebar-footer {
@@ -285,15 +285,15 @@
       gap: 6px;
       margin-top: 4px;
       padding-top: 6px;
-      border-top: 1px solid rgba(31, 41, 55, 0.95);
+      border-top: 1px solid var(--border-soft);
       font-size: 0.72rem;
       color: var(--text-muted);
     }
 
     .model-pill {
       border-radius: 999px;
-      background: rgba(15, 23, 42, 0.9);
-      border: 1px solid rgba(148, 163, 184, 0.35);
+      background: #f9fafb;
+      border: 1px solid var(--border-soft);
       padding: 4px 8px;
       display: inline-flex;
       align-items: center;
@@ -305,31 +305,30 @@
       width: 7px;
       height: 7px;
       border-radius: 999px;
-      background: var(--accent);
-      box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.3);
+      background: #16a34a;
+      box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.3);
     }
 
     /* MAIN CHAT PANEL */
     .chat-panel {
       flex: 1;
-      background: radial-gradient(circle at top left, rgba(15, 23, 42, 0.96), rgba(15, 23, 42, 0.98));
+      background: radial-gradient(circle at top left, #ffffff, #f9fafb);
       border-radius: var(--radius-xl);
-      border: 1px solid rgba(148, 163, 184, 0.25);
+      border: 1px solid var(--border-soft);
       display: flex;
       flex-direction: column;
       overflow: hidden;
-      box-shadow: 0 24px 70px rgba(15, 23, 42, 0.85);
-      backdrop-filter: blur(24px);
+      box-shadow: 0 20px 50px rgba(15, 23, 42, 0.08);
     }
 
     .chat-header-modern {
       padding: 14px 16px;
-      border-bottom: 1px solid rgba(31, 41, 55, 0.95);
+      border-bottom: 1px solid #e5e7eb;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 12px;
-      background: radial-gradient(circle at top, rgba(56, 189, 248, 0.2), rgba(15, 23, 42, 1));
+      background: linear-gradient(to right, #eff6ff, #ffffff);
     }
 
     .chat-title-block {
@@ -344,18 +343,19 @@
       display: flex;
       align-items: center;
       gap: 6px;
+      color: #111827;
     }
 
     .chat-title span.logo-mini {
       width: 18px;
       height: 18px;
       border-radius: 999px;
-      background: radial-gradient(circle at 20% -20%, #f9fafb, #38bdf8);
+      background: radial-gradient(circle at 20% -20%, #eff6ff, #2563eb);
       display: inline-flex;
       align-items: center;
       justify-content: center;
       font-size: 0.7rem;
-      color: #020617;
+      color: #111827;
       font-weight: 700;
     }
 
@@ -363,9 +363,9 @@
       font-size: 0.68rem;
       padding: 3px 7px;
       border-radius: 999px;
-      border: 1px solid rgba(148, 163, 184, 0.5);
-      background: rgba(15, 23, 42, 0.75);
-      color: #cbd5f5;
+      border: 1px solid #e5e7eb;
+      background: #ffffff;
+      color: #4b5563;
       text-transform: uppercase;
       letter-spacing: 0.06em;
     }
@@ -388,15 +388,15 @@
       height: 8px;
       border-radius: 999px;
       background: #22c55e;
-      box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.25);
+      box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.4);
     }
 
     .chip-soft {
       border-radius: 999px;
       padding: 3px 8px;
-      border: 1px solid rgba(148, 163, 184, 0.5);
-      background: rgba(15, 23, 42, 0.7);
-      color: #e5e7eb;
+      border: 1px solid #e5e7eb;
+      background: #ffffff;
+      color: #111827;
       display: inline-flex;
       align-items: center;
       gap: 5px;
@@ -411,6 +411,7 @@
       flex-direction: column;
       gap: 10px;
       overflow: hidden;
+      background: var(--bg-panel);
     }
 
     .chat-greeting-card {
@@ -419,8 +420,8 @@
       width: 100%;
       padding: 12px 14px;
       border-radius: 18px;
-      background: radial-gradient(circle at top left, rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.96));
-      border: 1px solid rgba(148, 163, 184, 0.4);
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
       display: flex;
       align-items: flex-start;
       gap: 10px;
@@ -430,12 +431,12 @@
       width: 28px;
       height: 28px;
       border-radius: 999px;
-      background: radial-gradient(circle at 10% -10%, #e5e7eb, #38bdf8);
+      background: radial-gradient(circle at 10% -10%, #eff6ff, #2563eb);
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 0.9rem;
-      color: #020617;
+      color: #111827;
       font-weight: 700;
       flex-shrink: 0;
     }
@@ -460,6 +461,7 @@
       margin: 0 auto;
       width: 100%;
       max-width: 720px;
+      max-height: 70vh; /* scrollbar muncul saat history banyak */
     }
 
     .chat-bubble-row {
@@ -485,31 +487,33 @@
 
     .chat-bubble-user {
       background-image: var(--bubble-user);
-      color: #0b1220;
-      border-color: rgba(56, 189, 248, 0.9);
-      box-shadow: 0 12px 30px rgba(8, 47, 73, 0.7);
+      color: #eff6ff;
+      border-color: rgba(37, 99, 235, 0.9);
+      box-shadow: 0 12px 30px rgba(37, 99, 235, 0.35);
     }
 
     .chat-bubble-ai {
       background-color: var(--bubble-ai);
-      border-color: rgba(148, 163, 184, 0.5);
-      color: #e5e7eb;
-      box-shadow: 0 14px 35px rgba(15, 23, 42, 0.9);
+      border-color: var(--border-soft);
+      color: #111827;
+      box-shadow: 0 10px 24px rgba(148, 163, 184, 0.25);
+      max-height: 340px;      /* kalau textnya panjang banget */
+      overflow-y: auto;       /* scrollbar di dalam bubble AI */
     }
 
     .ai-avatar {
       width: 28px;
       height: 28px;
       border-radius: 999px;
-      background: radial-gradient(circle at 10% -10%, #e5e7eb, #38bdf8);
+      background: radial-gradient(circle at 10% -10%, #eff6ff, #2563eb);
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #020617;
+      color: #111827;
       font-size: 0.78rem;
       font-weight: 700;
       flex-shrink: 0;
-      box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.4);
+      box-shadow: 0 0 0 1px rgba(148, 163, 184, 0.6);
     }
 
     /* LOADING PLACEHOLDER */
@@ -525,9 +529,9 @@
       border-radius: 999px;
       background: linear-gradient(
         90deg,
-        rgba(51, 65, 85, 0.4),
-        rgba(148, 163, 184, 0.4),
-        rgba(51, 65, 85, 0.4)
+        rgba(209, 213, 219, 0.6),
+        rgba(156, 163, 175, 0.6),
+        rgba(209, 213, 219, 0.6)
       );
       background-size: 200% 100%;
       animation: shimmer 1.4s infinite ease-in-out;
@@ -545,6 +549,7 @@
       0% {
         background-position: 200% 0;
       }
+
       100% {
         background-position: -200% 0;
       }
@@ -552,17 +557,17 @@
 
     /* INPUT AREA */
     .chat-input-container {
-      border-top: 1px solid rgba(31, 41, 55, 0.95);
+      border-top: 1px solid #e5e7eb;
       padding: 10px 14px 12px;
-      background: linear-gradient(to top, rgba(15, 23, 42, 1), rgba(15, 23, 42, 0.98));
+      background: #ffffff;
     }
 
     .chat-input-inner {
       max-width: 720px;
       margin: 0 auto;
-      background: rgba(15, 23, 42, 0.9);
+      background: #f9fafb;
       border-radius: 999px;
-      border: 1px solid rgba(148, 163, 184, 0.45);
+      border: 1px solid var(--border-soft);
       display: flex;
       align-items: center;
       padding: 4px 4px 4px 14px;
@@ -573,8 +578,8 @@
     .chat-input-inner:focus-within {
       border-color: var(--accent);
       box-shadow:
-        0 0 0 1px rgba(56, 189, 248, 0.4),
-        0 14px 40px rgba(15, 23, 42, 0.9);
+        0 0 0 1px rgba(37, 99, 235, 0.3),
+        0 12px 30px rgba(148, 163, 184, 0.3);
     }
 
     .chat-input-prefix {
@@ -589,8 +594,8 @@
       width: 18px;
       height: 18px;
       border-radius: 999px;
-      background: rgba(15, 23, 42, 0.9);
-      border: 1px solid rgba(148, 163, 184, 0.5);
+      background: #ffffff;
+      border: 1px solid var(--border-soft);
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -602,13 +607,13 @@
       border: none;
       outline: none;
       background: transparent;
-      color: #e5e7eb;
+      color: #111827;
       font-size: 0.9rem;
       padding: 6px 0;
     }
 
     #prompt::placeholder {
-      color: rgba(148, 163, 184, 0.8);
+      color: #9ca3af;
     }
 
     .btn-send {
@@ -618,15 +623,15 @@
       font-size: 0.86rem;
       font-weight: 500;
       border: none;
-      background: linear-gradient(135deg, #0ea5e9, #38bdf8);
-      color: #0b1120;
+      background: linear-gradient(135deg, #2563eb, #3b82f6);
+      color: #eff6ff;
       display: inline-flex;
       align-items: center;
       justify-content: center;
       gap: 6px;
       box-shadow:
-        0 14px 45px rgba(8, 47, 73, 0.9),
-        0 0 0 1px rgba(15, 23, 42, 0.7);
+        0 12px 30px rgba(37, 99, 235, 0.4),
+        0 0 0 1px rgba(30, 64, 175, 0.25);
     }
 
     .btn-send:disabled {
@@ -658,11 +663,11 @@
       min-width: 18px;
       height: 18px;
       border-radius: 4px;
-      border: 1px solid rgba(148, 163, 184, 0.6);
-      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid var(--border-soft);
+      background: #ffffff;
       font-size: 0.72rem;
       font-family: inherit;
-      color: #e5e7eb;
+      color: #111827;
     }
 
     .status-text {
@@ -675,7 +680,7 @@
       width: 12px;
       height: 12px;
       border-radius: 999px;
-      border: 2px solid rgba(148, 163, 184, 0.4);
+      border: 2px solid rgba(209, 213, 219, 0.9);
       border-top-color: var(--accent);
       animation: spin 0.7s linear infinite;
       display: none;
@@ -689,13 +694,15 @@
 
     /* SCROLLBAR */
     #chat-box::-webkit-scrollbar,
-    .suggestions::-webkit-scrollbar {
+    .suggestions::-webkit-scrollbar,
+    .chat-bubble-ai::-webkit-scrollbar {
       width: 6px;
     }
 
     #chat-box::-webkit-scrollbar-thumb,
-    .suggestions::-webkit-scrollbar-thumb {
-      background-color: rgba(148, 163, 184, 0.6);
+    .suggestions::-webkit-scrollbar-thumb,
+    .chat-bubble-ai::-webkit-scrollbar-thumb {
+      background-color: #cbd5f5;
       border-radius: 999px;
     }
 
@@ -824,20 +831,20 @@
 
         <!-- BODY -->
         <main class="chat-body-modern">
-          <!-- Greeting card (shown when no history) -->
+          <!-- Greeting card -->
           <div id="greetingCard" class="chat-greeting-card">
             <div class="greeting-icon">AI</div>
             <div class="greeting-text">
               <h2>Selamat datang 👋</h2>
               <p>
-                Saya <strong>Gemini</strong>, asisten AI kamu. Tulis apa yang ingin kamu kerjakan atau tanyakan,
+                Saya Gemini, asisten AI kamu. Tulis apa yang ingin kamu kerjakan atau tanyakan,
                 dan saya akan bantu merangkai jawaban, ide, atau solusi yang lebih rapih.
               </p>
             </div>
           </div>
 
           <div id="chat-box">
-            <!-- Messages will be rendered here -->
+            <!-- Messages -->
           </div>
         </main>
 
@@ -879,7 +886,7 @@
     // ===============================
     //   CONFIG
     // ===============================
-    const API_KEY = "AIzaSyBlyZScLwO6NnvfqiInNf2saHFajvI4-N8"; // Ganti dengan API key kamu
+    const API_KEY = "AIzaSyBlyZScLwO6NnvfqiInNf2saHFajvI4-N8"; // ganti dengan API key kamu
     const MODEL_NAME = "gemini-2.5-flash";
     const genAI = new GoogleGenerativeAI(API_KEY);
     const model = genAI.getGenerativeModel({ model: MODEL_NAME });
@@ -966,9 +973,16 @@
       }
     }
 
+    // Hapus semua tanda ** dari teks supaya tidak tampil di UI
+    function sanitizeText(text) {
+      if (!text) return "";
+      return text.replace(/\*\*/g, "");
+    }
+
     function typeText(element, text, onComplete) {
+      const clean = sanitizeText(text);
       element.textContent = "";
-      const chars = Array.from(text);
+      const chars = Array.from(clean);
       let index = 0;
       const speed = 15; // ms per char
 
@@ -992,16 +1006,17 @@
       const isUser = role === "user";
       row.className = "chat-bubble-row " + (isUser ? "user" : "ai");
 
+      const cleanText = sanitizeText(text);
+
       if (isUser) {
         const bubble = document.createElement("div");
         bubble.className = "chat-bubble chat-bubble-user";
-        bubble.textContent = text;
+        bubble.textContent = cleanText;
         row.appendChild(bubble);
         chatBox.appendChild(row);
         scrollToBottom();
         return { row, bubble };
       } else {
-        // AI
         const avatar = document.createElement("div");
         avatar.className = "ai-avatar";
         avatar.textContent = "AI";
@@ -1018,9 +1033,9 @@
             </div>
           `;
         } else if (animate) {
-          typeText(bubble, text);
+          typeText(bubble, cleanText);
         } else {
-          bubble.textContent = text;
+          bubble.textContent = cleanText;
         }
 
         row.appendChild(avatar);
@@ -1080,7 +1095,8 @@
         let lines = text
           .split(/\r?\n/)
           .map((l) => l.replace(/^[-*\d.\s]+/, "").trim())
-          .filter((l) => l.length > 0);
+          .filter((l) => l.length > 0)
+          .map(sanitizeText);
 
         if (!lines.length) {
           throw new Error("Respons kosong dari model.");
@@ -1134,18 +1150,16 @@
       try {
         const result = await model.generateContent(prompt);
         const reply = result.response.text();
+        const cleanReply = sanitizeText(reply);
 
-        // Simpan ke history dulu
-        conversationHistory.push({ role: "ai", text: reply });
+        conversationHistory.push({ role: "ai", text: cleanReply });
         saveHistory();
 
-        // Ganti loading dengan typing effect
         bubble.innerHTML = "";
-        typeText(bubble, reply, () => {
+        typeText(bubble, cleanReply, () => {
           statusText.textContent = "Siap membantu ✨";
         });
 
-        // Kadang-kadang refresh suggestions (chance kecil)
         if (Math.random() < 0.25) {
           loadSuggestions();
         }
