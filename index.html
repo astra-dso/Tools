@@ -2,849 +2,675 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8" />
-    <title>PDF Toolkit – All in One</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>PDF Tools - Frontend Only</title>
 
-    <!-- Tailwind CDN -->
+    <!-- Tailwind -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primaryBlue: "#3B82F6",
-                        softBlue: "#E0F2FE",
-                        darkNavy: "#0F172A",
-                        accentPurple: "#8B5CF6",
-                        accentGreen: "#22C55E",
-                        accentOrange: "#F97316",
-                        accentRed: "#EF4444"
-                    }
-                }
-            }
-        };
-    </script>
+
+    <!-- pdf-lib (untuk manipulasi PDF) -->
+    <script src="https://cdn.jsdelivr.net/npm/pdf-lib/dist/pdf-lib.min.js"></script>
+
+    <!-- pdf.js (untuk render PDF ke image) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.min.mjs" type="module"></script>
+
+    <style>
+        body { font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    </style>
 </head>
-<body class="bg-slate-50 text-slate-800">
-<div class="min-h-screen flex flex-col">
+<body class="bg-white text-gray-800">
 
-    <!-- NAVBAR -->
-    <header class="border-b border-slate-200 bg-white/80 backdrop-blur">
-        <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
-            <div class="flex items-center gap-2">
-                <div class="w-9 h-9 rounded-xl bg-primaryBlue/10 flex items-center justify-center">
-                    <span class="font-bold text-primaryBlue text-lg">PT</span>
-                </div>
-                <div>
-                    <div class="font-semibold text-darkNavy text-lg leading-tight">PDF Toolkit</div>
-                    <div class="text-xs text-slate-500 leading-tight">All-in-one PDF & document tools</div>
+<div class="min-h-screen flex items-start justify-center">
+    <div class="max-w-7xl w-full px-6 py-8">
+
+        <h1 class="text-2xl font-semibold text-gray-700 mb-6">
+            PDF Tools (Frontend Only)
+        </h1>
+
+        <div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
+
+            <!-- SIDEBAR MENU -->
+            <div class="lg:col-span-2">
+                <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 text-sm">
+
+                    <!-- ATUR PDF -->
+                    <div>
+                        <h2 class="text-xs font-semibold tracking-wide text-gray-500 mb-3">
+                            ATUR PDF
+                        </h2>
+                        <ul class="space-y-2">
+                            <li class="flex items-center cursor-pointer tool-item" data-tool="merge">
+                                <span class="w-7 h-7 mr-3 rounded bg-red-500 flex items-center justify-center text-white text-xs">
+                                    +
+                                </span>
+                                <span class="text-red-600 font-semibold">Gabungkan PDF</span>
+                            </li>
+                            <li class="flex items-center cursor-pointer tool-item" data-tool="split">
+                                <span class="w-7 h-7 mr-3 rounded bg-red-500 flex items-center justify-center text-white text-xs">
+                                    ||
+                                </span>
+                                <span>Pisahkan / Ekstrak halaman</span>
+                            </li>
+                            <li class="flex items-center cursor-pointer tool-item" data-tool="deletePages">
+                                <span class="w-7 h-7 mr-3 rounded bg-red-500 flex items-center justify-center text-white text-xs">
+                                    ✕
+                                </span>
+                                <span>Hapus halaman</span>
+                            </li>
+                            <li class="flex items-center cursor-pointer tool-item" data-tool="reorder">
+                                <span class="w-7 h-7 mr-3 rounded bg-red-500 flex items-center justify-center text-white text-xs">
+                                    ☰
+                                </span>
+                                <span>Atur urutan PDF</span>
+                            </li>
+                            <li class="flex items-center cursor-pointer tool-item" data-tool="scanToPdf">
+                                <span class="w-7 h-7 mr-3 rounded bg-red-500 flex items-center justify-center text-white text-xs">
+                                    📷
+                                </span>
+                                <span>Pindai ke PDF (gambar → PDF)</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- OPTIMALKAN PDF -->
+                    <div>
+                        <h2 class="text-xs font-semibold tracking-wide text-gray-500 mb-3">
+                            OPTIMALKAN PDF
+                        </h2>
+                        <ul class="space-y-2">
+                            <li class="flex items-center cursor-pointer tool-item" data-tool="compress">
+                                <span class="w-7 h-7 mr-3 rounded bg-green-500 flex items-center justify-center text-white text-xs">
+                                    ⬇
+                                </span>
+                                <span>Kompres ringan (re-save)</span>
+                            </li>
+                            <li class="flex items-center cursor-pointer" onclick="notImplemented('Perbaiki PDF / OCR butuh backend / layanan khusus.')">
+                                <span class="w-7 h-7 mr-3 rounded bg-green-500 flex items-center justify-center text-white text-xs">
+                                    🛠
+                                </span>
+                                <span>Perbaiki / OCR PDF (butuh server)</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- KONVERSI KE PDF -->
+                    <div>
+                        <h2 class="text-xs font-semibold tracking-wide text-gray-500 mb-3">
+                            KONVERSI KE PDF
+                        </h2>
+                        <ul class="space-y-2">
+                            <li class="flex items-center cursor-pointer tool-item" data-tool="imagesToPdf">
+                                <span class="w-7 h-7 mr-3 rounded bg-yellow-400 flex items-center justify-center text-white text-xs">
+                                    JPG
+                                </span>
+                                <span>JPG/PNG ke PDF</span>
+                            </li>
+                            <li class="flex items-center cursor-pointer" onclick="notImplemented('WORD/EXCEL/PPT → PDF butuh server (LibreOffice, dll).')">
+                                <span class="w-7 h-7 mr-3 rounded bg-blue-500 flex items-center justify-center text-white text-xs">
+                                    W
+                                </span>
+                                <span>WORD / EXCEL / PPT ke PDF (butuh server)</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- KONVERSI DARI PDF -->
+                    <div>
+                        <h2 class="text-xs font-semibold tracking-wide text-gray-500 mb-3">
+                            KONVERSI DARI PDF
+                        </h2>
+                        <ul class="space-y-2">
+                            <li class="flex items-center cursor-pointer tool-item" data-tool="pdfToImages">
+                                <span class="w-7 h-7 mr-3 rounded bg-yellow-400 flex items-center justify-center text-white text-xs">
+                                    JPG
+                                </span>
+                                <span>PDF ke JPG/PNG</span>
+                            </li>
+                            <li class="flex items-center cursor-pointer" onclick="notImplemented('PDF → Word/Excel/PPT/HTML hi-fidelity butuh server.')">
+                                <span class="w-7 h-7 mr-3 rounded bg-gray-500 flex items-center justify-center text-white text-xs">
+                                    ⇄
+                                </span>
+                                <span>PDF ke Word/Excel/PPT/HTML (butuh server)</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- EDIT PDF -->
+                    <div>
+                        <h2 class="text-xs font-semibold tracking-wide text-gray-500 mb-3">
+                            EDIT PDF
+                        </h2>
+                        <ul class="space-y-2">
+                            <li class="flex items-center cursor-pointer tool-item" data-tool="rotate">
+                                <span class="w-7 h-7 mr-3 rounded bg-pink-500 flex items-center justify-center text-white text-xs">
+                                    ↻
+                                </span>
+                                <span>Putar halaman</span>
+                            </li>
+                            <li class="flex items-center cursor-pointer tool-item" data-tool="pageNumbers">
+                                <span class="w-7 h-7 mr-3 rounded bg-pink-500 flex items-center justify-center text-white text-xs">
+                                    #
+                                </span>
+                                <span>Tambah nomor halaman</span>
+                            </li>
+                            <li class="flex items-center cursor-pointer tool-item" data-tool="watermark">
+                                <span class="w-7 h-7 mr-3 rounded bg-pink-500 flex items-center justify-center text-white text-xs">
+                                    💧
+                                </span>
+                                <span>Tambah watermark teks</span>
+                            </li>
+                            <li class="flex items-center cursor-pointer" onclick="notImplemented('Crop / edit konten PDF detail butuh logic lebih kompleks / backend.')">
+                                <span class="w-7 h-7 mr-3 rounded bg-pink-500 flex items-center justify-center text-white text-xs">
+                                    ✂
+                                </span>
+                                <span>Potong / Edit konten lanjut (butuh backend)</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- KEAMANAN PDF -->
+                    <div>
+                        <h2 class="text-xs font-semibold tracking-wide text-gray-500 mb-3">
+                            KEAMANAN PDF
+                        </h2>
+                        <ul class="space-y-2">
+                            <li class="flex items-center cursor-pointer" onclick="notImplemented('Buka PDF terkunci password kuat harus dari server / user sendiri.')">
+                                <span class="w-7 h-7 mr-3 rounded bg-blue-700 flex items-center justify-center text-white text-xs">
+                                    🔓
+                                </span>
+                                <span>Buka PDF terkunci (butuh server)</span>
+                            </li>
+                            <li class="flex items-center cursor-pointer" onclick="notImplemented('Proteksi / tanda tangan digital yang aman idealnya di server.')">
+                                <span class="w-7 h-7 mr-3 rounded bg-blue-700 flex items-center justify-center text-white text-xs">
+                                    🔒
+                                </span>
+                                <span>Proteksi / Tanda tangan / Bandingkan (butuh server)</span>
+                            </li>
+                        </ul>
+                    </div>
+
                 </div>
             </div>
-            <div class="hidden sm:flex items-center gap-4 text-xs">
-                <span class="text-slate-500">Modern · Secure · Corporate</span>
-                <button class="px-3 py-1.5 rounded-full bg-primaryBlue text-white font-medium shadow-sm">
-                    Dashboard
-                </button>
+
+            <!-- TOOL PANEL -->
+            <div class="lg:col-span-3">
+                <div id="toolPanel" class="border border-gray-200 rounded-xl p-4 bg-gray-50 text-sm">
+                    <p class="text-gray-600">
+                        Klik salah satu tool di panel kiri. Form & fungsi untuk tool tersebut akan tampil di sini.
+                    </p>
+                </div>
             </div>
         </div>
-    </header>
 
-    <!-- MAIN -->
-    <main class="flex-1">
-        <section class="max-w-7xl mx-auto px-4 py-6 lg:py-10">
-            <!-- HERO -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8 items-center">
-                <div>
-                    <p class="text-[11px] font-semibold tracking-wide text-primaryBlue mb-1 uppercase">
-                        PDF & Document Suite
-                    </p>
-                    <h1 class="text-3xl sm:text-4xl font-bold text-darkNavy mb-3">
-                        Satu dashboard untuk semua<br class="hidden sm:block">
-                        kebutuhan PDF & dokumen kamu.
-                    </h1>
-                    <p class="text-sm sm:text-base text-slate-600 mb-4">
-                        Organize, optimize, convert, edit, dan secure PDF hanya dari satu halaman.
-                        Frontend ini siap dihubungkan ke backend Laravel atau API pilihanmu.
-                    </p>
-                    <div class="flex flex-wrap gap-2 text-xs sm:text-sm">
-                        <span class="px-3 py-1 rounded-full bg-softBlue text-primaryBlue font-medium">
-                            Tampilan corporate biru–putih
-                        </span>
-                        <span class="px-3 py-1 rounded-full bg-slate-100 text-slate-700">
-                            Responsive & mobile-first
-                        </span>
-                    </div>
-                </div>
-                <div class="bg-gradient-to-br from-softBlue via-white to-white border border-slate-200/70 rounded-2xl p-4 sm:p-5 shadow-sm">
-                    <h2 class="font-semibold text-darkNavy text-base sm:text-lg mb-2">
-                        Cara pakai secara arsitektur
-                    </h2>
-                    <ol class="list-decimal list-inside text-xs sm:text-sm text-slate-600 space-y-1 mb-3">
-                        <li>Pilih jenis tool di panel kiri (misal: <b>Merge PDF</b> atau <b>PDF to WORD</b>).</li>
-                        <li>Upload file di panel kanan & klik tombol proses.</li>
-                        <li>JavaScript akan memanggil endpoint backend sesuai tool yang dipilih.</li>
-                    </ol>
-                    <p class="text-[11px] sm:text-xs text-slate-500">
-                        Frontend ini tidak melakukan konversi berat di browser untuk menjaga performa.
-                        Semua operasi kompleks (OCR, Word, Excel, Sign, dll) sebaiknya diproses di server.
-                    </p>
-                </div>
-            </div>
-
-            <!-- LAYOUT UTAMA: KIRI GRID TOOL, KANAN DETAIL -->
-            <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
-                <div class="grid grid-cols-1 lg:grid-cols-3 xl:grid-cols-4">
-                    <!-- KIRI: GRID TOOLS (2 kolom di desktop) -->
-                    <div class="lg:col-span-2 xl:col-span-3 border-b lg:border-b-0 lg:border-r border-slate-200 bg-slate-50/60">
-                        <div class="p-4 sm:p-5">
-                            <div class="flex items-center justify-between gap-2 mb-4">
-                                <div>
-                                    <h3 class="font-semibold text-darkNavy text-sm sm:text-base">
-                                        Pilih Tool
-                                    </h3>
-                                    <p class="text-[11px] sm:text-xs text-slate-500">
-                                        Klik salah satu untuk melihat detail & upload file.
-                                    </p>
-                                </div>
-                                <div class="hidden sm:flex items-center gap-2">
-                                    <input id="toolSearch" type="text"
-                                           placeholder="Cari tool (misal: word, merge)..."
-                                           class="text-xs sm:text-sm border border-slate-300 rounded-xl px-3 py-1.5 bg-white focus:outline-none focus:ring-2 focus:ring-primaryBlue/60 w-40 sm:w-52">
-                                </div>
-                            </div>
-
-                            <!-- CATEGORIES & TOOLS -->
-                            <div class="space-y-5 text-xs sm:text-sm">
-                                <!-- ORGANIZE PDF -->
-                                <div>
-                                    <div class="flex items-center gap-2 mb-2">
-                                        <span class="text-[11px] font-semibold tracking-wide text-accentOrange uppercase">
-                                            Organize PDF
-                                        </span>
-                                        <div class="h-px flex-1 bg-slate-200"></div>
-                                    </div>
-                                    <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-2">
-                                        <button class="tool-card" data-tool-id="merge-pdf">
-                                            <span class="tool-icon bg-accentOrange/10 text-accentOrange">⇄</span>
-                                            <span class="tool-name">Merge PDF</span>
-                                        </button>
-                                        <button class="tool-card" data-tool-id="split-pdf">
-                                            <span class="tool-icon bg-accentOrange/10 text-accentOrange">▤</span>
-                                            <span class="tool-name">Split PDF</span>
-                                        </button>
-                                        <button class="tool-card" data-tool-id="remove-pages">
-                                            <span class="tool-icon bg-accentOrange/10 text-accentOrange">✕</span>
-                                            <span class="tool-name">Remove pages</span>
-                                        </button>
-                                        <button class="tool-card" data-tool-id="extract-pages">
-                                            <span class="tool-icon bg-accentOrange/10 text-accentOrange">⇥</span>
-                                            <span class="tool-name">Extract pages</span>
-                                        </button>
-                                        <button class="tool-card" data-tool-id="organize-pdf">
-                                            <span class="tool-icon bg-accentOrange/10 text-accentOrange">☰</span>
-                                            <span class="tool-name">Organize PDF</span>
-                                        </button>
-                                        <button class="tool-card" data-tool-id="scan-to-pdf">
-                                            <span class="tool-icon bg-accentOrange/10 text-accentOrange">📷</span>
-                                            <span class="tool-name">Scan to PDF</span>
-                                        </button>
-                                    </div>
-                                </div>
-
-                                <!-- OPTIMIZE PDF -->
-                                <div>
-                                    <div class="flex items-center gap-2 mb-2">
-                                        <span class="text-[11px] font-semibold tracking-wide text-accentGreen uppercase">
-                                            Optimize PDF
-                                        </span>
-                                        <div class="h-px flex-1 bg-slate-200"></div>
-                                    </div>
-                                    <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-2">
-                                        <button class="tool-card" data-tool-id="compress-pdf">
-                                            <span class="tool-icon bg-accentGreen/10 text-accentGreen">⬇</span>
-                                            <span class="tool-name">Compress PDF</span>
-                                        </button>
-                                        <button class="tool-card" data-tool-id="repair-pdf">
-                                            <span class="tool-icon bg-accentGreen/10 text-accentGreen">🛠</span>
-                                            <span class="tool-name">Repair PDF</span>
-                                        </button>
-                                        <button class="tool-card" data-tool-id="ocr-pdf">
-                                            <span class="tool-icon bg-accentGreen/10 text-accentGreen">🔎</span>
-                                            <span class="tool-name">OCR PDF</span>
-                                        </button>
-                                    </div>
-                                </div>
-
-                                <!-- CONVERT TO PDF -->
-                                <div>
-                                    <div class="flex items-center gap-2 mb-2">
-                                        <span class="text-[11px] font-semibold tracking-wide text-primaryBlue uppercase">
-                                            Convert to PDF
-                                        </span>
-                                        <div class="h-px flex-1 bg-slate-200"></div>
-                                    </div>
-                                    <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-2">
-                                        <button class="tool-card" data-tool-id="jpg-to-pdf">
-                                            <span class="tool-icon bg-primaryBlue/10 text-primaryBlue">🖼</span>
-                                            <span class="tool-name">JPG to PDF</span>
-                                        </button>
-                                        <button class="tool-card" data-tool-id="word-to-pdf">
-                                            <span class="tool-icon bg-primaryBlue/10 text-primaryBlue">W</span>
-                                            <span class="tool-name">WORD to PDF</span>
-                                        </button>
-                                        <button class="tool-card" data-tool-id="ppt-to-pdf">
-                                            <span class="tool-icon bg-primaryBlue/10 text-primaryBlue">P</span>
-                                            <span class="tool-name">POWERPOINT to PDF</span>
-                                        </button>
-                                        <button class="tool-card" data-tool-id="excel-to-pdf">
-                                            <span class="tool-icon bg-primaryBlue/10 text-primaryBlue">X</span>
-                                            <span class="tool-name">EXCEL to PDF</span>
-                                        </button>
-                                        <button class="tool-card" data-tool-id="html-to-pdf">
-                                            <span class="tool-icon bg-primaryBlue/10 text-primaryBlue">&lt;/&gt;</span>
-                                            <span class="tool-name">HTML to PDF</span>
-                                        </button>
-                                    </div>
-                                </div>
-
-                                <!-- CONVERT FROM PDF -->
-                                <div>
-                                    <div class="flex items-center gap-2 mb-2">
-                                        <span class="text-[11px] font-semibold tracking-wide text-accentPurple uppercase">
-                                            Convert from PDF
-                                        </span>
-                                        <div class="h-px flex-1 bg-slate-200"></div>
-                                    </div>
-                                    <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-2">
-                                        <button class="tool-card" data-tool-id="pdf-to-jpg">
-                                            <span class="tool-icon bg-accentPurple/10 text-accentPurple">🖼</span>
-                                            <span class="tool-name">PDF to JPG</span>
-                                        </button>
-                                        <button class="tool-card" data-tool-id="pdf-to-word">
-                                            <span class="tool-icon bg-accentPurple/10 text-accentPurple">W</span>
-                                            <span class="tool-name text-red-500 font-semibold">PDF to WORD</span>
-                                        </button>
-                                        <button class="tool-card" data-tool-id="pdf-to-ppt">
-                                            <span class="tool-icon bg-accentPurple/10 text-accentPurple">P</span>
-                                            <span class="tool-name">PDF to POWERPOINT</span>
-                                        </button>
-                                        <button class="tool-card" data-tool-id="pdf-to-excel">
-                                            <span class="tool-icon bg-accentPurple/10 text-accentPurple">X</span>
-                                            <span class="tool-name">PDF to EXCEL</span>
-                                        </button>
-                                        <button class="tool-card" data-tool-id="pdf-to-pdfa">
-                                            <span class="tool-icon bg-accentPurple/10 text-accentPurple">A</span>
-                                            <span class="tool-name">PDF to PDF/A</span>
-                                        </button>
-                                    </div>
-                                </div>
-
-                                <!-- EDIT PDF -->
-                                <div>
-                                    <div class="flex items-center gap-2 mb-2">
-                                        <span class="text-[11px] font-semibold tracking-wide text-fuchsia-600 uppercase">
-                                            Edit PDF
-                                        </span>
-                                        <div class="h-px flex-1 bg-slate-200"></div>
-                                    </div>
-                                    <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-2">
-                                        <button class="tool-card" data-tool-id="rotate-pdf">
-                                            <span class="tool-icon bg-fuchsia-100 text-fuchsia-600">⤾</span>
-                                            <span class="tool-name">Rotate PDF</span>
-                                        </button>
-                                        <button class="tool-card" data-tool-id="add-page-numbers">
-                                            <span class="tool-icon bg-fuchsia-100 text-fuchsia-600">#</span>
-                                            <span class="tool-name">Add page numbers</span>
-                                        </button>
-                                        <button class="tool-card" data-tool-id="add-watermark">
-                                            <span class="tool-icon bg-fuchsia-100 text-fuchsia-600">💧</span>
-                                            <span class="tool-name">Add watermark</span>
-                                        </button>
-                                        <button class="tool-card" data-tool-id="crop-pdf">
-                                            <span class="tool-icon bg-fuchsia-100 text-fuchsia-600">✂</span>
-                                            <span class="tool-name">Crop PDF</span>
-                                        </button>
-                                        <button class="tool-card" data-tool-id="edit-pdf">
-                                            <span class="tool-icon bg-fuchsia-100 text-fuchsia-600">✏</span>
-                                            <span class="tool-name">Edit PDF</span>
-                                        </button>
-                                    </div>
-                                </div>
-
-                                <!-- PDF SECURITY -->
-                                <div>
-                                    <div class="flex items-center gap-2 mb-2">
-                                        <span class="text-[11px] font-semibold tracking-wide text-accentRed uppercase">
-                                            PDF Security
-                                        </span>
-                                        <div class="h-px flex-1 bg-slate-200"></div>
-                                    </div>
-                                    <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-2">
-                                        <button class="tool-card" data-tool-id="unlock-pdf">
-                                            <span class="tool-icon bg-accentRed/10 text-accentRed">🔓</span>
-                                            <span class="tool-name">Unlock PDF</span>
-                                        </button>
-                                        <button class="tool-card" data-tool-id="protect-pdf">
-                                            <span class="tool-icon bg-accentRed/10 text-accentRed">🔒</span>
-                                            <span class="tool-name">Protect PDF</span>
-                                        </button>
-                                        <button class="tool-card" data-tool-id="sign-pdf">
-                                            <span class="tool-icon bg-accentRed/10 text-accentRed">✍</span>
-                                            <span class="tool-name">Sign PDF</span>
-                                        </button>
-                                        <button class="tool-card" data-tool-id="redact-pdf">
-                                            <span class="tool-icon bg-accentRed/10 text-accentRed">▮</span>
-                                            <span class="tool-name">Redact PDF</span>
-                                        </button>
-                                        <button class="tool-card" data-tool-id="compare-pdf">
-                                            <span class="tool-icon bg-accentRed/10 text-accentRed">⇄</span>
-                                            <span class="tool-name">Compare PDF</span>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-
-                    <!-- KANAN: DETAIL & UPLOAD -->
-                    <div class="bg-white">
-                        <div class="p-4 sm:p-5 h-full flex flex-col gap-4">
-                            <div>
-                                <h3 id="detailTitle" class="font-semibold text-darkNavy text-sm sm:text-base mb-1">
-                                    Merge PDF
-                                </h3>
-                                <p id="detailCategory" class="text-[11px] sm:text-xs text-slate-500 mb-2">
-                                    Organize PDF · Gabungkan beberapa file PDF menjadi satu dokumen.
-                                </p>
-                                <p id="detailDescription" class="text-xs sm:text-sm text-slate-600">
-                                    Upload dua atau lebih file PDF, urutkan sesuai kebutuhan, lalu gabungkan menjadi satu file PDF baru.
-                                    Tombol di bawah ini bisa kamu hubungkan ke endpoint Laravel untuk proses merge di server.
-                                </p>
-                            </div>
-
-                            <div class="text-[11px] sm:text-xs text-slate-500 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2">
-                                <span class="font-semibold text-slate-700">Endpoint saran:</span>
-                                <span id="detailEndpoint">POST /api/pdf/merge</span>
-                            </div>
-
-                            <form id="uploadForm" class="flex flex-col gap-3 flex-1">
-                                <div>
-                                    <label class="block text-xs font-medium text-slate-600 mb-1">
-                                        File input
-                                    </label>
-                                    <div id="dropzone"
-                                         class="relative border-2 border-dashed border-slate-300 rounded-2xl px-4 py-6 sm:px-5 sm:py-7 bg-slate-50/60 hover:border-primaryBlue/70 transition flex flex-col items-center justify-center cursor-pointer">
-                                        <input id="fileInput" type="file" multiple
-                                               class="absolute inset-0 opacity-0 cursor-pointer" />
-                                        <div class="flex flex-col items-center text-center">
-                                            <div class="w-10 h-10 rounded-xl bg-primaryBlue/10 flex items-center justify-center mb-2">
-                                                <span class="text-xl">⬆</span>
-                                            </div>
-                                            <p class="text-sm text-darkNavy font-medium mb-1">
-                                                Klik untuk pilih file atau drag & drop
-                                            </p>
-                                            <p id="fileHint" class="text-xs text-slate-500">
-                                                Terima: PDF (.pdf). Untuk merge sebaiknya pilih lebih dari satu file.
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <div id="filePreview" class="mt-1 text-[11px] sm:text-xs text-slate-500">
-                                        Belum ada file dipilih.
-                                    </div>
-                                </div>
-
-                                <div id="techInfo"
-                                     class="text-[11px] sm:text-xs text-slate-500 bg-softBlue border border-primaryBlue/20 rounded-xl px-3 py-2">
-                                    Operasi ini sebaiknya dijalankan di server menggunakan library seperti
-                                    <span class="font-semibold text-slate-700">FPDI, TCPDF, atau Ghostscript</span>.
-                                </div>
-
-                                <div class="mt-auto flex flex-col gap-2">
-                                    <button type="submit"
-                                            class="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold bg-primaryBlue text-white shadow-sm hover:bg-primaryBlue/90 focus:outline-none focus:ring-2 focus:ring-primaryBlue/60">
-                                        <span id="submitLabel">Process Merge</span>
-                                        <span>⟶</span>
-                                    </button>
-                                    <p id="statusText"
-                                       class="text-[11px] sm:text-xs text-slate-500">
-                                        Status: siap. (Saat ini tombol belum memanggil backend – tinggal kamu sambungkan via AJAX/fetch.)
-                                    </p>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-        </section>
-    </main>
-
-    <!-- FOOTER -->
-    <footer class="border-t border-slate-200 bg-white">
-        <div class="max-w-7xl mx-auto px-4 py-4 flex flex-col sm:flex-row items-center justify-between gap-2">
-            <p class="text-[11px] sm:text-xs text-slate-500">
-                Frontend PDF Toolkit – hubungkan tiap tool ke route Laravel / API yang sesuai.
-            </p>
-            <p class="text-[11px] sm:text-xs text-slate-500">
-                © 2025 PDF Toolkit UI.
-            </p>
+        <!-- LOG AREA -->
+        <div id="logBox"
+             class="mt-6 text-xs text-gray-600 border border-dashed border-gray-300 rounded p-3 bg-gray-50 max-h-48 overflow-auto">
+            <strong>Log:</strong>
+            <div id="logContent"></div>
         </div>
-    </footer>
+
+    </div>
 </div>
 
-<!-- SCRIPT -->
+<script type="module">
+    // pdf.js sudah di-load sebagai module di atas (script type="module")
+</script>
+
 <script>
-    // definisi tools (bisa kamu pakai untuk mapping ke endpoint Laravel)
+    // ===== UTIL =====
+    function log(msg) {
+        const el = document.getElementById('logContent');
+        const line = document.createElement('div');
+        line.textContent = new Date().toLocaleTimeString() + ' - ' + msg;
+        el.prepend(line);
+    }
+
+    function notImplemented(msg) {
+        alert(msg);
+        log('Fitur belum diimplementasikan di frontend-only: ' + msg);
+    }
+
+    function downloadBytes(bytes, filename, mime) {
+        const blob = new Blob([bytes], { type: mime });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        a.click();
+        URL.revokeObjectURL(url);
+    }
+
+    // ===== TOOL MENU HANDLER =====
+    const toolPanel = document.getElementById('toolPanel');
+
     const tools = {
-        "merge-pdf": {
-            name: "Merge PDF",
-            category: "Organize PDF",
-            endpoint: "POST /api/pdf/merge",
-            description: "Gabungkan beberapa file PDF menjadi satu dokumen baru dengan urutan halaman sesuai pilihan pengguna.",
-            hint: "Terima: PDF (.pdf). Untuk merge sebaiknya pilih lebih dari satu file.",
-            accept: "application/pdf",
-            multiple: true,
-            tech: "Gunakan library PDF server-side seperti FPDI, TCPDF, iText, atau Ghostscript untuk menggabungkan file."
-        },
-        "split-pdf": {
-            name: "Split PDF",
-            category: "Organize PDF",
-            endpoint: "POST /api/pdf/split",
-            description: "Pisahkan satu file PDF menjadi beberapa file berdasarkan range halaman tertentu.",
-            hint: "Terima: 1 file PDF (.pdf). Range halaman bisa dikirim sebagai parameter tambahan (misal: 1-3,5,7-10).",
-            accept: "application/pdf",
-            multiple: false,
-            tech: "Di backend, baca halaman PDF lalu buat file baru per range halaman."
-        },
-        "remove-pages": {
-            name: "Remove pages",
-            category: "Organize PDF",
-            endpoint: "POST /api/pdf/remove-pages",
-            description: "Hapus halaman tertentu dari dokumen PDF tanpa mengubah halaman lain.",
-            hint: "Terima: 1 file PDF (.pdf). Kirim daftar halaman yang akan dihapus (contoh: 2,4,5).",
-            accept: "application/pdf",
-            multiple: false,
-            tech: "Implementasi mirip split, hanya saja kamu buang halaman yang tidak diinginkan dan rebuild PDF."
-        },
-        "extract-pages": {
-            name: "Extract pages",
-            category: "Organize PDF",
-            endpoint: "POST /api/pdf/extract-pages",
-            description: "Ekstrak halaman terpilih menjadi PDF baru (atau beberapa PDF).",
-            hint: "Terima: 1 file PDF (.pdf) + parameter halaman yang akan diambil.",
-            accept: "application/pdf",
-            multiple: false,
-            tech: "Buat PDF baru yang hanya berisi halaman tertentu dari file sumber."
-        },
-        "organize-pdf": {
-            name: "Organize PDF",
-            category: "Organize PDF",
-            endpoint: "POST /api/pdf/organize",
-            description: "Atur ulang urutan halaman (reorder), rotate per halaman, atau hapus halaman langsung dari satu interface.",
-            hint: "Terima: 1 file PDF (.pdf). Informasi urutan/aksi halaman dikirim sebagai JSON.",
-            accept: "application/pdf",
-            multiple: false,
-            tech: "Butuh struktur data halaman + aksi. Bisa digabung dengan fitur split/remove/rotate."
-        },
-        "scan-to-pdf": {
-            name: "Scan to PDF",
-            category: "Organize PDF",
-            endpoint: "POST /api/pdf/scan",
-            description: "Konversi hasil scan (image) menjadi PDF yang rapi, bisa digabung per beberapa halaman.",
-            hint: "Terima: beberapa file gambar (JPG/PNG) dari hasil scan.",
-            accept: "image/*",
-            multiple: true,
-            tech: "Upload image, normalisasi ukuran & orientasi, lalu jadikan satu file PDF."
+        merge() {
+            toolPanel.innerHTML = `
+                <h2 class="text-lg font-semibold mb-3">Gabungkan PDF</h2>
+                <p class="text-xs text-gray-600 mb-3">
+                    Pilih beberapa file PDF, urutan sesuai urutan pilih, lalu klik <strong>Gabungkan</strong>.
+                </p>
+                <input id="mergeFiles" type="file" accept="application/pdf" multiple
+                       class="block mb-3 text-xs" />
+                <button id="mergeRun"
+                        class="px-3 py-1.5 rounded bg-red-500 text-white text-xs font-semibold">
+                    Gabungkan
+                </button>
+            `;
+
+            document.getElementById('mergeRun').addEventListener('click', async () => {
+                const input = document.getElementById('mergeFiles');
+                const files = Array.from(input.files || []);
+                if (!files.length) return alert('Pilih minimal 2 file PDF.');
+
+                log('Menggabungkan ' + files.length + ' PDF...');
+                const mergedPdf = await PDFLib.PDFDocument.create();
+
+                for (const file of files) {
+                    const bytes = await file.arrayBuffer();
+                    const pdf = await PDFLib.PDFDocument.load(bytes);
+                    const copied = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
+                    copied.forEach(p => mergedPdf.addPage(p));
+                }
+
+                const mergedBytes = await mergedPdf.save();
+                downloadBytes(mergedBytes, 'merged.pdf', 'application/pdf');
+                log('Selesai gabungkan PDF.');
+            });
         },
 
-        // Optimize
-        "compress-pdf": {
-            name: "Compress PDF",
-            category: "Optimize PDF",
-            endpoint: "POST /api/pdf/compress",
-            description: "Kompres ukuran file PDF tanpa mengurangi kualitas secara signifikan.",
-            hint: "Terima: 1 file PDF (.pdf). Dapat ditambah parameter level kompresi (low/medium/high).",
-            accept: "application/pdf",
-            multiple: false,
-            tech: "Gunakan Ghostscript atau library lain untuk recompress gambar & stream."
-        },
-        "repair-pdf": {
-            name: "Repair PDF",
-            category: "Optimize PDF",
-            endpoint: "POST /api/pdf/repair",
-            description: "Perbaiki PDF yang korup/rusak sebisa mungkin agar tetap bisa dibuka.",
-            hint: "Terima: 1 file PDF (.pdf) yang bermasalah.",
-            accept: "application/pdf",
-            multiple: false,
-            tech: "Beberapa library PDF punya fungsi rebuild xref / struktur internal."
-        },
-        "ocr-pdf": {
-            name: "OCR PDF",
-            category: "Optimize PDF",
-            endpoint: "POST /api/pdf/ocr",
-            description: "Tambahkan layer teks hasil OCR ke PDF scan sehingga bisa dicari (searchable).",
-            hint: "Terima: 1 file PDF (.pdf) berbasis image.",
-            accept: "application/pdf",
-            multiple: false,
-            tech: "Gunakan engine OCR seperti Tesseract atau layanan eksternal; lalu embed teks ke PDF."
+        split() {
+            toolPanel.innerHTML = `
+                <h2 class="text-lg font-semibold mb-3">Pisahkan / Ekstrak Halaman</h2>
+                <p class="text-xs text-gray-600 mb-3">
+                    Pilih PDF, lalu masukkan range halaman yang ingin diambil, misalnya:
+                    <code>1-3</code> atau <code>1,3,5</code>.
+                </p>
+                <input id="splitFile" type="file" accept="application/pdf" class="block mb-3 text-xs" />
+                <input id="splitPages" type="text" placeholder="contoh: 1-3 atau 1,3,5"
+                       class="border rounded px-2 py-1 text-xs w-full mb-3" />
+                <button id="splitRun"
+                        class="px-3 py-1.5 rounded bg-red-500 text-white text-xs font-semibold">
+                    Ekstrak
+                </button>
+            `;
+
+            document.getElementById('splitRun').addEventListener('click', async () => {
+                const fileInput = document.getElementById('splitFile');
+                const file = fileInput.files[0];
+                if (!file) return alert('Pilih file PDF.');
+
+                const spec = document.getElementById('splitPages').value.trim();
+                if (!spec) return alert('Isi halaman yang ingin diambil.');
+
+                const parsePages = (spec, max) => {
+                    const set = new Set();
+                    spec.split(',').forEach(part => {
+                        part = part.trim();
+                        if (!part) return;
+                        if (part.includes('-')) {
+                            let [a, b] = part.split('-').map(n => parseInt(n, 10));
+                            if (isNaN(a) || isNaN(b)) return;
+                            if (a > b) [a, b] = [b, a];
+                            for (let i = a; i <= b; i++) if (i >= 1 && i <= max) set.add(i - 1);
+                        } else {
+                            const n = parseInt(part, 10);
+                            if (!isNaN(n) && n >= 1 && n <= max) set.add(n - 1);
+                        }
+                    });
+                    return Array.from(set).sort((x, y) => x - y);
+                };
+
+                log('Memuat PDF untuk split...');
+                const bytes = await file.arrayBuffer();
+                const pdf = await PDFLib.PDFDocument.load(bytes);
+                const total = pdf.getPageCount();
+                const pageIdx = parsePages(spec, total);
+                if (!pageIdx.length) return alert('Tidak ada halaman valid dari input.');
+
+                const out = await PDFLib.PDFDocument.create();
+                const copied = await out.copyPages(pdf, pageIdx);
+                copied.forEach(p => out.addPage(p));
+                const outBytes = await out.save();
+                downloadBytes(outBytes, 'extracted_pages.pdf', 'application/pdf');
+                log('Halaman diekstrak: ' + pageIdx.map(i => i + 1).join(', '));
+            });
         },
 
-        // Convert to PDF
-        "jpg-to-pdf": {
-            name: "JPG to PDF",
-            category: "Convert to PDF",
-            endpoint: "POST /api/convert/jpg-to-pdf",
-            description: "Konversi satu atau beberapa gambar JPG/PNG ke file PDF.",
-            hint: "Terima: image (JPG/PNG/WebP).",
-            accept: "image/*",
-            multiple: true,
-            tech: "Gabungkan image ke halaman PDF; bisa juga dilakukan di frontend untuk kasus ringan."
-        },
-        "word-to-pdf": {
-            name: "WORD to PDF",
-            category: "Convert to PDF",
-            endpoint: "POST /api/convert/word-to-pdf",
-            description: "Konversi dokumen Word (.doc/.docx) menjadi PDF dengan layout tetap.",
-            hint: "Terima: file .doc atau .docx.",
-            accept: ".doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-            multiple: false,
-            tech: "Di server, gunakan LibreOffice, unoconv, atau API converter dokumen."
-        },
-        "ppt-to-pdf": {
-            name: "POWERPOINT to PDF",
-            category: "Convert to PDF",
-            endpoint: "POST /api/convert/ppt-to-pdf",
-            description: "Konversi presentasi PowerPoint ke PDF (per slide jadi satu halaman).",
-            hint: "Terima: .ppt atau .pptx.",
-            accept: ".ppt,.pptx,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation",
-            multiple: false,
-            tech: "Mirip Word->PDF, pakai engine office di server."
-        },
-        "excel-to-pdf": {
-            name: "EXCEL to PDF",
-            category: "Convert to PDF",
-            endpoint: "POST /api/convert/excel-to-pdf",
-            description: "Konversi spreadsheet Excel ke format PDF.",
-            hint: "Terima: .xls atau .xlsx.",
-            accept: ".xls,.xlsx,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-            multiple: false,
-            tech: "Pertimbangkan pengaturan area print & orientasi sebelum convert."
-        },
-        "html-to-pdf": {
-            name: "HTML to PDF",
-            category: "Convert to PDF",
-            endpoint: "POST /api/convert/html-to-pdf",
-            description: "Konversi halaman HTML atau URL menjadi PDF dengan styling CSS.",
-            hint: "Terima: file .html atau kirim URL via parameter terpisah.",
-            accept: ".html,text/html",
-            multiple: false,
-            tech: "Gunakan headless browser (Puppeteer) atau wkhtmltopdf."
+        deletePages() {
+            toolPanel.innerHTML = `
+                <h2 class="text-lg font-semibold mb-3">Hapus Halaman</h2>
+                <p class="text-xs text-gray-600 mb-3">
+                    Pilih PDF lalu masukkan nomor halaman yang ingin <strong>dihapus</strong>,
+                    misalnya <code>2</code> atau <code>2,4,6</code>.
+                </p>
+                <input id="delFile" type="file" accept="application/pdf" class="block mb-3 text-xs" />
+                <input id="delPages" type="text" placeholder="contoh: 2 atau 2,4,6"
+                       class="border rounded px-2 py-1 text-xs w-full mb-3" />
+                <button id="delRun"
+                        class="px-3 py-1.5 rounded bg-red-500 text-white text-xs font-semibold">
+                    Hapus halaman
+                </button>
+            `;
+
+            document.getElementById('delRun').addEventListener('click', async () => {
+                const file = document.getElementById('delFile').files[0];
+                if (!file) return alert('Pilih file PDF.');
+                const spec = document.getElementById('delPages').value.trim();
+                if (!spec) return alert('Isi halaman yang ingin dihapus.');
+
+                const bytes = await file.arrayBuffer();
+                const pdf = await PDFLib.PDFDocument.load(bytes);
+                const total = pdf.getPageCount();
+
+                const delSet = new Set();
+                spec.split(',').forEach(p => {
+                    const n = parseInt(p.trim(), 10);
+                    if (!isNaN(n) && n >= 1 && n <= total) delSet.add(n - 1);
+                });
+
+                const keepIdx = [];
+                for (let i = 0; i < total; i++) if (!delSet.has(i)) keepIdx.push(i);
+
+                const out = await PDFLib.PDFDocument.create();
+                const copied = await out.copyPages(pdf, keepIdx);
+                copied.forEach(p => out.addPage(p));
+                const outBytes = await out.save();
+                downloadBytes(outBytes, 'deleted_pages.pdf', 'application/pdf');
+                log('Halaman dihapus: ' + Array.from(delSet).map(i => i + 1).join(', '));
+            });
         },
 
-        // Convert from PDF
-        "pdf-to-jpg": {
-            name: "PDF to JPG",
-            category: "Convert from PDF",
-            endpoint: "POST /api/convert/pdf-to-jpg",
-            description: "Ubah setiap halaman PDF menjadi gambar JPG/PNG.",
-            hint: "Terima: 1 file PDF (.pdf).",
-            accept: "application/pdf",
-            multiple: false,
-            tech: "Render tiap halaman ke bitmap (misal pakai ImageMagick/Poppler) lalu kirim sebagai ZIP."
-        },
-        "pdf-to-word": {
-            name: "PDF to WORD",
-            category: "Convert from PDF",
-            endpoint: "POST /api/convert/pdf-to-word",
-            description: "Konversi PDF ke dokumen Word yang bisa diedit kembali.",
-            hint: "Terima: 1 file PDF (.pdf).",
-            accept: "application/pdf",
-            multiple: false,
-            tech: "Biasanya pakai layanan/API spesialis karena parsing layout cukup kompleks."
-        },
-        "pdf-to-ppt": {
-            name: "PDF to POWERPOINT",
-            category: "Convert from PDF",
-            endpoint: "POST /api/convert/pdf-to-ppt",
-            description: "Konversi halaman PDF menjadi slide PowerPoint.",
-            hint: "Terima: 1 file PDF (.pdf).",
-            accept: "application/pdf",
-            multiple: false,
-            tech: "Setiap halaman bisa di-embed sebagai gambar dalam slide PPTX."
-        },
-        "pdf-to-excel": {
-            name: "PDF to EXCEL",
-            category: "Convert from PDF",
-            endpoint: "POST /api/convert/pdf-to-excel",
-            description: "Ekstrak tabel dari PDF dan ubah menjadi Excel.",
-            hint: "Terima: 1 file PDF (.pdf) dengan konten tabel.",
-            accept: "application/pdf",
-            multiple: false,
-            tech: "Butuh engine yang mampu mendeteksi grid/tabel, misal Tabula atau API khusus."
-        },
-        "pdf-to-pdfa": {
-            name: "PDF to PDF/A",
-            category: "Convert from PDF",
-            endpoint: "POST /api/convert/pdf-to-pdfa",
-            description: "Konversi PDF biasa menjadi PDF/A untuk kebutuhan arsip jangka panjang.",
-            hint: "Terima: 1 file PDF (.pdf).",
-            accept: "application/pdf",
-            multiple: false,
-            tech: "Gunakan tool yang mendukung compliance PDF/A (Ghostscript, callas, dll)."
+        reorder() {
+            toolPanel.innerHTML = `
+                <h2 class="text-lg font-semibold mb-3">Atur Urutan Halaman</h2>
+                <p class="text-xs text-gray-600 mb-3">
+                    Pilih PDF lalu masukkan urutan baru. Contoh:
+                    <code>2,1,3</code> (tukar halaman 1 & 2).
+                </p>
+                <input id="ordFile" type="file" accept="application/pdf" class="block mb-3 text-xs" />
+                <input id="ordSpec" type="text" placeholder="contoh: 2,1,3"
+                       class="border rounded px-2 py-1 text-xs w-full mb-3" />
+                <button id="ordRun"
+                        class="px-3 py-1.5 rounded bg-red-500 text-white text-xs font-semibold">
+                    Atur urutan
+                </button>
+            `;
+
+            document.getElementById('ordRun').addEventListener('click', async () => {
+                const file = document.getElementById('ordFile').files[0];
+                if (!file) return alert('Pilih file PDF.');
+
+                const spec = document.getElementById('ordSpec').value.trim();
+                if (!spec) return alert('Isi urutan halaman.');
+
+                const bytes = await file.arrayBuffer();
+                const pdf = await PDFLib.PDFDocument.load(bytes);
+                const total = pdf.getPageCount();
+
+                const order = spec.split(',').map(s => parseInt(s.trim(), 10) - 1);
+                if (order.length !== total || order.some(n => isNaN(n) || n < 0 || n >= total)) {
+                    return alert('Urutan harus berisi seluruh halaman 1..' + total);
+                }
+
+                const out = await PDFLib.PDFDocument.create();
+                const copied = await out.copyPages(pdf, order);
+                copied.forEach(p => out.addPage(p));
+                const outBytes = await out.save();
+                downloadBytes(outBytes, 'reordered.pdf', 'application/pdf');
+                log('Urutan baru: ' + spec);
+            });
         },
 
-        // Edit PDF
-        "rotate-pdf": {
-            name: "Rotate PDF",
-            category: "Edit PDF",
-            endpoint: "POST /api/pdf/rotate",
-            description: "Putar halaman PDF (90°, 180°, dsb) sesuai kebutuhan.",
-            hint: "Terima: 1 file PDF (.pdf) + parameter halaman & derajat rotasi.",
-            accept: "application/pdf",
-            multiple: false,
-            tech: "Update metadata rotation atau render ulang halaman."
-        },
-        "add-page-numbers": {
-            name: "Add page numbers",
-            category: "Edit PDF",
-            endpoint: "POST /api/pdf/add-page-numbers",
-            description: "Tambahkan nomor halaman di posisi tertentu (footer/header).",
-            hint: "Terima: 1 file PDF (.pdf).",
-            accept: "application/pdf",
-            multiple: false,
-            tech: "Render ulang tiap halaman dengan teks nomor pada posisi yang diinginkan."
-        },
-        "add-watermark": {
-            name: "Add watermark",
-            category: "Edit PDF",
-            endpoint: "POST /api/pdf/add-watermark",
-            description: "Tambahkan watermark teks atau gambar pada setiap halaman PDF.",
-            hint: "Terima: 1 file PDF (.pdf). Bisa tambah parameter teks / upload gambar watermark.",
-            accept: "application/pdf",
-            multiple: false,
-            tech: "Overlay layer transparan di atas/bawah konten PDF."
-        },
-        "crop-pdf": {
-            name: "Crop PDF",
-            category: "Edit PDF",
-            endpoint: "POST /api/pdf/crop",
-            description: "Potong area halaman (crop margins) untuk menghapus bagian kosong atau tidak diinginkan.",
-            hint: "Terima: 1 file PDF (.pdf) + koordinat crop.",
-            accept: "application/pdf",
-            multiple: false,
-            tech: "Set crop box/mediabox baru pada tiap halaman."
-        },
-        "edit-pdf": {
-            name: "Edit PDF",
-            category: "Edit PDF",
-            endpoint: "POST /api/pdf/edit",
-            description: "Edit konten dasar PDF: tambahkan teks, gambar, bentuk sederhana.",
-            hint: "Terima: 1 file PDF (.pdf) + instruksi edit (JSON).",
-            accept: "application/pdf",
-            multiple: false,
-            tech: "Lebih kompleks; bisa dikombinasikan dengan HTML overlay atau editor visual."
+        scanToPdf() {
+            // sama dengan imagesToPdf
+            this.imagesToPdf();
         },
 
-        // Security
-        "unlock-pdf": {
-            name: "Unlock PDF",
-            category: "PDF Security",
-            endpoint: "POST /api/pdf/unlock",
-            description: "Hapus password / pembatasan editing dari PDF yang kamu miliki hak aksesnya.",
-            hint: "Terima: 1 file PDF (.pdf) + password yang benar.",
-            accept: "application/pdf",
-            multiple: false,
-            tech: "Dekripsi PDF dengan password, kemudian simpan ulang tanpa proteksi."
+        imagesToPdf() {
+            toolPanel.innerHTML = `
+                <h2 class="text-lg font-semibold mb-3">Gambar (JPG/PNG) ke PDF</h2>
+                <p class="text-xs text-gray-600 mb-3">
+                    Pilih satu atau beberapa gambar. Setiap gambar akan menjadi 1 halaman PDF.
+                </p>
+                <input id="imgFiles" type="file" accept="image/*" multiple class="block mb-3 text-xs" />
+                <button id="imgRun"
+                        class="px-3 py-1.5 rounded bg-yellow-500 text-white text-xs font-semibold">
+                    Buat PDF
+                </button>
+            `;
+
+            document.getElementById('imgRun').addEventListener('click', async () => {
+                const files = Array.from(document.getElementById('imgFiles').files || []);
+                if (!files.length) return alert('Pilih gambar.');
+
+                const pdfDoc = await PDFLib.PDFDocument.create();
+
+                for (const file of files) {
+                    const bytes = await file.arrayBuffer();
+                    let img;
+                    if (file.type === 'image/png') {
+                        img = await pdfDoc.embedPng(bytes);
+                    } else {
+                        img = await pdfDoc.embedJpg(bytes);
+                    }
+                    const { width, height } = img;
+                    const page = pdfDoc.addPage([width, height]);
+                    page.drawImage(img, { x: 0, y: 0, width, height });
+                }
+
+                const outBytes = await pdfDoc.save();
+                downloadBytes(outBytes, 'images_to_pdf.pdf', 'application/pdf');
+                log('Gambar dikonversi ke PDF.');
+            });
         },
-        "protect-pdf": {
-            name: "Protect PDF",
-            category: "PDF Security",
-            endpoint: "POST /api/pdf/protect",
-            description: "Tambahkan password dan hak akses (view, print, edit) pada PDF.",
-            hint: "Terima: 1 file PDF (.pdf) + password & opsi hak akses.",
-            accept: "application/pdf",
-            multiple: false,
-            tech: "Enkripsi PDF dengan password owner/user sesuai kebutuhan."
+
+        compress() {
+            toolPanel.innerHTML = `
+                <h2 class="text-lg font-semibold mb-3">Kompres (Re-save) PDF</h2>
+                <p class="text-xs text-gray-600 mb-3">
+                    Frontend-only tidak bisa kompres se-agresif server.
+                    Fitur ini hanya <strong>re-save</strong> PDF yang kadang bisa mengecilkan ukuran sedikit.
+                </p>
+                <input id="cmpFile" type="file" accept="application/pdf" class="block mb-3 text-xs" />
+                <button id="cmpRun"
+                        class="px-3 py-1.5 rounded bg-green-500 text-white text-xs font-semibold">
+                    Kompres ringan
+                </button>
+            `;
+
+            document.getElementById('cmpRun').addEventListener('click', async () => {
+                const file = document.getElementById('cmpFile').files[0];
+                if (!file) return alert('Pilih file PDF.');
+
+                const bytes = await file.arrayBuffer();
+                const pdf = await PDFLib.PDFDocument.load(bytes, { updateMetadata: true });
+                const outBytes = await pdf.save({ useObjectStreams: true });
+                downloadBytes(outBytes, 'compressed_light.pdf', 'application/pdf');
+                log('PDF disimpan ulang (kompres ringan).');
+            });
         },
-        "sign-pdf": {
-            name: "Sign PDF",
-            category: "PDF Security",
-            endpoint: "POST /api/pdf/sign",
-            description: "Tambahkan tanda tangan (draw/image) atau digital signature ke dokumen PDF.",
-            hint: "Terima: 1 file PDF (.pdf). Gambar tanda tangan bisa diupload terpisah.",
-            accept: "application/pdf",
-            multiple: false,
-            tech: "Bisa sederhana (gambar di atas halaman) atau full PKI signature."
+
+        rotate() {
+            toolPanel.innerHTML = `
+                <h2 class="text-lg font-semibold mb-3">Putar Halaman</h2>
+                <p class="text-xs text-gray-600 mb-3">
+                    Pilih PDF dan pilih sudut rotasi. Berlaku untuk <strong>semua</strong> halaman.
+                </p>
+                <input id="rotFile" type="file" accept="application/pdf" class="block mb-3 text-xs" />
+                <select id="rotAngle" class="border rounded px-2 py-1 text-xs mb-3">
+                    <option value="90">90° searah jarum jam</option>
+                    <option value="180">180°</option>
+                    <option value="270">270°</option>
+                </select>
+                <button id="rotRun"
+                        class="px-3 py-1.5 rounded bg-pink-500 text-white text-xs font-semibold">
+                    Putar
+                </button>
+            `;
+
+            document.getElementById('rotRun').addEventListener('click', async () => {
+                const file = document.getElementById('rotFile').files[0];
+                if (!file) return alert('Pilih file PDF.');
+                const angle = parseInt(document.getElementById('rotAngle').value, 10);
+
+                const bytes = await file.arrayBuffer();
+                const pdf = await PDFLib.PDFDocument.load(bytes);
+                const pages = pdf.getPages();
+                pages.forEach(p => p.setRotation(PDFLib.degrees(angle)));
+                const outBytes = await pdf.save();
+                downloadBytes(outBytes, 'rotated.pdf', 'application/pdf');
+                log('Semua halaman diputar ' + angle + '°.');
+            });
         },
-        "redact-pdf": {
-            name: "Redact PDF",
-            category: "PDF Security",
-            endpoint: "POST /api/pdf/redact",
-            description: "Sembunyikan informasi sensitif di PDF secara permanen (black box).",
-            hint: "Terima: 1 file PDF (.pdf) + posisi/teks yang akan di-redact.",
-            accept: "application/pdf",
-            multiple: false,
-            tech: "Hapus konten di area tertentu, bukan hanya overlay warna hitam."
+
+        pageNumbers() {
+            toolPanel.innerHTML = `
+                <h2 class="text-lg font-semibold mb-3">Nomor Halaman</h2>
+                <p class="text-xs text-gray-600 mb-3">
+                    Tambahkan nomor halaman di bawah-tengah tiap halaman.
+                </p>
+                <input id="numFile" type="file" accept="application/pdf" class="block mb-3 text-xs" />
+                <button id="numRun"
+                        class="px-3 py-1.5 rounded bg-pink-500 text-white text-xs font-semibold">
+                    Tambah nomor
+                </button>
+            `;
+
+            document.getElementById('numRun').addEventListener('click', async () => {
+                const file = document.getElementById('numFile').files[0];
+                if (!file) return alert('Pilih file PDF.');
+
+                const bytes = await file.arrayBuffer();
+                const pdf = await PDFLib.PDFDocument.load(bytes);
+                const pages = pdf.getPages();
+                const font = await pdf.embedFont(PDFLib.StandardFonts.Helvetica);
+
+                pages.forEach((page, idx) => {
+                    const { width } = page.getSize();
+                    const text = `${idx + 1} / ${pages.length}`;
+                    const fontSize = 10;
+                    const textWidth = font.widthOfTextAtSize(text, fontSize);
+                    page.drawText(text, {
+                        x: (width - textWidth) / 2,
+                        y: 20,
+                        size: fontSize,
+                        font,
+                        color: PDFLib.rgb(0.3, 0.3, 0.3)
+                    });
+                });
+
+                const outBytes = await pdf.save();
+                downloadBytes(outBytes, 'page_numbers.pdf', 'application/pdf');
+                log('Nomor halaman ditambahkan.');
+            });
         },
-        "compare-pdf": {
-            name: "Compare PDF",
-            category: "PDF Security",
-            endpoint: "POST /api/pdf/compare",
-            description: "Bandingkan dua versi PDF dan highlight perbedaannya.",
-            hint: "Terima: 2 file PDF (.pdf) yang akan dibandingkan.",
-            accept: "application/pdf",
-            multiple: true,
-            tech: "Butuh engine yang bisa diff text/visual per halaman; bisa juga pakai layanan eksternal."
+
+        watermark() {
+            toolPanel.innerHTML = `
+                <h2 class="text-lg font-semibold mb-3">Watermark Teks</h2>
+                <p class="text-xs text-gray-600 mb-3">
+                    Tambahkan watermark teks diagonal di setiap halaman.
+                </p>
+                <input id="wmFile" type="file" accept="application/pdf" class="block mb-3 text-xs" />
+                <input id="wmText" type="text" placeholder="contoh: CONFIDENTIAL"
+                       class="border rounded px-2 py-1 text-xs w-full mb-3" />
+                <button id="wmRun"
+                        class="px-3 py-1.5 rounded bg-pink-500 text-white text-xs font-semibold">
+                    Tambah watermark
+                </button>
+            `;
+
+            document.getElementById('wmRun').addEventListener('click', async () => {
+                const file = document.getElementById('wmFile').files[0];
+                if (!file) return alert('Pilih file PDF.');
+                const text = document.getElementById('wmText').value.trim() || 'CONFIDENTIAL';
+
+                const bytes = await file.arrayBuffer();
+                const pdf = await PDFLib.PDFDocument.load(bytes);
+                const pages = pdf.getPages();
+                const font = await pdf.embedFont(PDFLib.StandardFonts.HelveticaBold);
+
+                pages.forEach(page => {
+                    const { width, height } = page.getSize();
+                    const fontSize = 40;
+                    const textWidth = font.widthOfTextAtSize(text, fontSize);
+
+                    page.drawText(text, {
+                        x: (width - textWidth) / 2,
+                        y: height / 2,
+                        size: fontSize,
+                        font,
+                        rotate: PDFLib.degrees(45),
+                        opacity: 0.2,
+                        color: PDFLib.rgb(0.7, 0, 0)
+                    });
+                });
+
+                const outBytes = await pdf.save();
+                downloadBytes(outBytes, 'watermarked.pdf', 'application/pdf');
+                log('Watermark ditambahkan.');
+            });
+        },
+
+        pdfToImages() {
+            toolPanel.innerHTML = `
+                <h2 class="text-lg font-semibold mb-3">PDF ke Gambar (PNG)</h2>
+                <p class="text-xs text-gray-600 mb-3">
+                    Frontend-only contoh sederhana: render semua halaman PDF jadi PNG lalu otomatis di-download.
+                </p>
+                <input id="p2iFile" type="file" accept="application/pdf" class="block mb-3 text-xs" />
+                <button id="p2iRun"
+                        class="px-3 py-1.5 rounded bg-yellow-500 text-white text-xs font-semibold">
+                    Convert ke PNG
+                </button>
+                <canvas id="p2iCanvas" class="hidden"></canvas>
+            `;
+
+            document.getElementById('p2iRun').addEventListener('click', async () => {
+                const file = document.getElementById('p2iFile').files[0];
+                if (!file) return alert('Pilih file PDF.');
+
+                log('Render PDF ke PNG, bisa agak lambat untuk banyak halaman...');
+                const arrayBuff = await file.arrayBuffer();
+
+                // load pdf.js sebagai module dinamis
+                const pdfjs = await import("https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.min.mjs");
+                const loadingTask = pdfjs.getDocument({ data: arrayBuff });
+                const pdf = await loadingTask.promise;
+
+                const canvas = document.getElementById('p2iCanvas');
+                const ctx = canvas.getContext('2d');
+
+                for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+                    const page = await pdf.getPage(pageNum);
+                    const viewport = page.getViewport({ scale: 1.5 });
+                    canvas.width = viewport.width;
+                    canvas.height = viewport.height;
+
+                    await page.render({ canvasContext: ctx, viewport }).promise;
+
+                    const dataUrl = canvas.toDataURL("image/png");
+                    const a = document.createElement('a');
+                    a.href = dataUrl;
+                    a.download = `page_${pageNum}.png`;
+                    a.click();
+                    log('Halaman ' + pageNum + ' di-download sebagai PNG.');
+                }
+            });
         }
     };
 
-    const toolCards = document.querySelectorAll(".tool-card");
-    const detailTitle = document.getElementById("detailTitle");
-    const detailCategory = document.getElementById("detailCategory");
-    const detailDescription = document.getElementById("detailDescription");
-    const detailEndpoint = document.getElementById("detailEndpoint");
-    const fileHint = document.getElementById("fileHint");
-    const fileInput = document.getElementById("fileInput");
-    const filePreview = document.getElementById("filePreview");
-    const techInfo = document.getElementById("techInfo");
-    const submitLabel = document.getElementById("submitLabel");
-    const statusText = document.getElementById("statusText");
-    const toolSearch = document.getElementById("toolSearch");
-    const dropzone = document.getElementById("dropzone");
-    const uploadForm = document.getElementById("uploadForm");
-
-    let activeToolId = "merge-pdf";
-
-    function setActiveTool(id) {
-        const tool = tools[id];
-        if (!tool) return;
-        activeToolId = id;
-
-        // update card UI
-        toolCards.forEach(btn => {
-            if (btn.dataset.toolId === id) {
-                btn.classList.add("border-primaryBlue", "bg-white", "shadow-sm");
-                btn.classList.remove("border-slate-200", "bg-white/80");
-            } else {
-                btn.classList.remove("border-primaryBlue", "bg-white", "shadow-sm");
-                btn.classList.add("border-slate-200", "bg-white/80");
+    // Bind menu click
+    document.querySelectorAll('.tool-item').forEach(item => {
+        item.addEventListener('click', () => {
+            const tool = item.getAttribute('data-tool');
+            if (tool && tools[tool]) {
+                tools[tool]();
+                log('Tool dibuka: ' + tool);
             }
         });
-
-        detailTitle.textContent = tool.name;
-        detailCategory.textContent = `${tool.category} · ${tool.description.split(".")[0]}.`;
-        detailDescription.textContent = tool.description;
-        detailEndpoint.textContent = tool.endpoint;
-        fileHint.textContent = tool.hint;
-        techInfo.textContent = tool.tech;
-
-        fileInput.accept = tool.accept;
-        fileInput.multiple = !!tool.multiple;
-        fileInput.value = "";
-        filePreview.textContent = "Belum ada file dipilih.";
-        statusText.textContent = "Status: siap. (Implementasi backend belum dihubungkan.)";
-
-        // label tombol
-        const actionVerb = tool.category.includes("Convert") ? "Convert" :
-            tool.category.includes("Security") ? "Apply" :
-            tool.category.includes("Edit") ? "Apply" :
-            "Process";
-        submitLabel.textContent = `${actionVerb} ${tool.name}`;
-    }
-
-    // initial styling stock for cards
-    toolCards.forEach(btn => {
-        btn.classList.add(
-            "flex", "flex-col", "items-start", "gap-1",
-            "px-3", "py-2.5", "rounded-xl",
-            "border", "border-slate-200",
-            "bg-white/80",
-            "hover:border-primaryBlue/70",
-            "hover:bg-softBlue/40",
-            "transition", "cursor-pointer", "text-left"
-        );
-        const iconSpan = btn.querySelector(".tool-icon");
-        const nameSpan = btn.querySelector(".tool-name");
-        if (iconSpan) iconSpan.classList.add(
-            "inline-flex", "items-center", "justify-center",
-            "w-7", "h-7", "rounded-lg", "text-xs", "font-semibold"
-        );
-        if (nameSpan) nameSpan.classList.add("text-[11px]", "sm:text-xs", "font-medium", "text-slate-700", "leading-snug");
     });
-
-    // events card click
-    toolCards.forEach(btn => {
-        btn.addEventListener("click", () => {
-            const id = btn.dataset.toolId;
-            setActiveTool(id);
-        });
-    });
-
-    // search filter
-    if (toolSearch) {
-        toolSearch.addEventListener("input", (e) => {
-            const q = e.target.value.trim().toLowerCase();
-            toolCards.forEach(btn => {
-                const id = btn.dataset.toolId;
-                const tool = tools[id];
-                const text = (tool.name + " " + tool.category).toLowerCase();
-                btn.style.display = text.includes(q) ? "flex" : "none";
-            });
-        });
-    }
-
-    // dropzone behaviour
-    dropzone.addEventListener("click", () => fileInput.click());
-
-    ["dragenter", "dragover"].forEach(evt => {
-        dropzone.addEventListener(evt, (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            dropzone.classList.add("border-primaryBlue", "bg-softBlue/40");
-        });
-    });
-
-    ["dragleave", "drop"].forEach(evt => {
-        dropzone.addEventListener(evt, (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            dropzone.classList.remove("border-primaryBlue", "bg-softBlue/40");
-        });
-    });
-
-    dropzone.addEventListener("drop", (e) => {
-        if (!e.dataTransfer.files.length) return;
-        fileInput.files = e.dataTransfer.files;
-        updateFilePreview();
-    });
-
-    fileInput.addEventListener("change", updateFilePreview);
-
-    function updateFilePreview() {
-        if (!fileInput.files.length) {
-            filePreview.textContent = "Belum ada file dipilih.";
-            return;
-        }
-        const files = Array.from(fileInput.files)
-            .map(f => `${f.name} (${Math.round(f.size / 1024)} KB)`);
-        filePreview.textContent = files.join(" · ");
-    }
-
-    // form submit (dummy – tinggal kamu ganti jadi fetch ke Laravel)
-    uploadForm.addEventListener("submit", (e) => {
-        e.preventDefault();
-        if (!fileInput.files.length) {
-            statusText.textContent = "Status: error – pilih file terlebih dahulu.";
-            alert("Silakan pilih file terlebih dahulu.");
-            return;
-        }
-        statusText.textContent = `Status: siap mengirim ke backend untuk tool "${tools[activeToolId].name}". 
-Saat ini belum ada request fetch, silakan tambahkan sendiri logic pemanggilan API Laravel di sini.`;
-    });
-
-    // set initial active
-    setActiveTool(activeToolId);
 </script>
+
 </body>
 </html>
