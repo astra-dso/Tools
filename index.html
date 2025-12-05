@@ -1,294 +1,435 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
   <meta charset="UTF-8" />
   <title>Modern Gemini AI Chat</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <script src="https://cdn.tailwindcss.com"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Bootstrap 5 CSS -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  />
+
+  <!-- Google Fonts (optional, biar lebih modern & clean) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  >
+
+  <style>
+    :root {
+      --bg-body: #f5f7fb;
+      --bg-card: #ffffff;
+      --border-soft: #e3e7f0;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background-color: var(--bg-body);
+      color: #1f2933;
+    }
+
+    .chat-wrapper {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 12px;
+    }
+
+    .chat-card {
+      width: 100%;
+      max-width: 960px;
+      border-radius: 24px;
+      border: 1px solid var(--border-soft);
+      box-shadow: 0 18px 45px rgba(15, 23, 42, 0.07);
+      background: radial-gradient(circle at top left, #f9fbff 0, #ffffff 40%, #ffffff 100%);
+    }
+
+    .chat-header {
+      border-bottom: 1px solid var(--border-soft);
+    }
+
+    .chat-header-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #2563eb, #4f46e5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      font-weight: 700;
+      font-size: 18px;
+    }
+
+    .chat-header-subtitle {
+      font-size: 0.875rem;
+      color: #64748b;
+    }
+
+    .chat-body {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding: 16px 20px 16px 20px;
+    }
+
+    /* Chat area height: responsive */
+    #chat-box {
+      height: clamp(320px, 60vh, 520px);
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
+    .chat-bubble {
+      max-width: 80%;
+      border-radius: 18px;
+      padding: 10px 14px;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    .chat-bubble-user {
+      background: linear-gradient(135deg, #2563eb, #3b82f6);
+      color: #ffffff;
+    }
+
+    .chat-bubble-ai {
+      background: #f3f4f6;
+      border: 1px solid #e5e7eb;
+      color: #111827;
+    }
+
+    .ai-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #2563eb, #4f46e5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      font-size: 0.8rem;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+
+    .suggestion-chip {
+      border-radius: 999px;
+      font-size: 0.85rem;
+    }
+
+    .chat-input-wrapper {
+      border-radius: 18px;
+      border: 1px solid var(--border-soft);
+      background-color: #f9fafb;
+    }
+
+    .chat-input-wrapper:focus-within {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.1);
+    }
+
+    .form-control:focus {
+      box-shadow: none;
+      border-color: transparent;
+    }
+
+    .btn-send {
+      min-width: 110px;
+      border-radius: 999px;
+      font-weight: 600;
+    }
+
+    /* Scrollbar halus */
+    #chat-box::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    #chat-box::-webkit-scrollbar-thumb {
+      background-color: #d1d5db;
+      border-radius: 999px;
+    }
+
+    @media (max-width: 575.98px) {
+      .chat-card {
+        border-radius: 18px;
+      }
+
+      .chat-body {
+        padding-inline: 14px;
+      }
+
+      .chat-bubble {
+        max-width: 100%;
+      }
+    }
+  </style>
 </head>
-<body class="bg-slate-50 text-slate-900 min-h-screen">
-  <div class="max-w-6xl mx-auto h-screen flex flex-col px-4 py-6">
-    <!-- HEADER -->
-    <header class="flex items-center justify-between gap-4">
-      <div>
-        <h1 class="text-2xl md:text-3xl font-semibold tracking-tight">
-          Gemini Chat Workspace
-        </h1>
-        <p class="text-sm text-slate-500 mt-1">
-          Ruang kerja tenang untuk eksplorasi ide, coding, dan brainstorming.
-        </p>
-      </div>
-      <div class="hidden sm:flex items-center gap-3">
-        <span class="text-xs uppercase tracking-wide text-slate-500">
-          Powered by
-        </span>
-        <span class="px-3 py-1 rounded-full bg-slate-900 text-slate-50 text-xs font-medium">
-          Gemini 2.5 Flash
-        </span>
-      </div>
-    </header>
 
-    <!-- MAIN -->
-    <main class="flex-1 flex flex-col lg:flex-row gap-6 mt-6 min-h-0">
-      <!-- CHAT PANEL -->
-      <section class="flex-1 flex flex-col bg-white border border-slate-200 rounded-3xl shadow-sm overflow-hidden">
-        <!-- Chat messages -->
-        <div
-          id="chat-box"
-          class="flex-1 overflow-y-auto px-6 py-4 space-y-4 scroll-smooth"
-        >
+<body>
+  <div class="chat-wrapper">
+    <div class="chat-card">
+      <!-- HEADER -->
+      <div class="chat-header px-4 px-sm-5 py-3 d-flex align-items-center justify-content-between">
+        <div class="d-flex align-items-center gap-3">
+          <div class="chat-header-icon">
+            G
+          </div>
+          <div>
+            <h1 class="h5 mb-1">Gemini Chat</h1>
+            <p class="chat-header-subtitle mb-0">
+              Tanyakan apa saja – seputar kerja, code, ide, atau hal lain.
+            </p>
+          </div>
+        </div>
+        <div class="d-none d-md-flex flex-column text-end small text-muted">
+          <span>Status: <span class="badge rounded-pill text-bg-success">Online</span></span>
+          <span id="model-name" class="mt-1">Model: gemini-2.5-flash</span>
+        </div>
+      </div>
+
+      <!-- BODY -->
+      <div class="chat-body">
+        <!-- SUGGESTIONS (AI GENERATED) -->
+        <div class="mb-1">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <span class="text-muted small">Saran pertanyaan untukmu</span>
+            <button id="refreshSuggestions"
+                    class="btn btn-link btn-sm text-decoration-none p-0">
+              Acak ulang
+            </button>
+          </div>
+          <div id="suggestions" class="d-flex flex-wrap gap-2">
+            <!-- Akan diisi AI -->
+          </div>
+        </div>
+
+        <!-- CHAT BOX -->
+        <div id="chat-box" class="mt-1">
           <!-- Initial AI message -->
-          <div class="flex items-start gap-3">
-            <div
-              class="shrink-0 bg-slate-900 w-9 h-9 rounded-full flex justify-center items-center text-xs font-semibold tracking-tight"
-            >
-              AI
-            </div>
-            <div
-              class="bg-slate-100 text-slate-900 px-4 py-3 rounded-2xl rounded-tl-sm text-sm max-w-xl"
-            >
-              Halo, saya Gemini. Ceritakan apa yang sedang kamu kerjakan hari ini. 👋
+          <div class="d-flex align-items-start gap-2 mb-3">
+            <div class="ai-avatar">AI</div>
+            <div class="chat-bubble chat-bubble-ai shadow-sm">
+              Halo, saya <strong>Gemini</strong>. Silakan tanya apa saja. ✨<br>
+              Kamu bisa klik salah satu saran di atas kalau bingung mau mulai dari mana.
             </div>
           </div>
         </div>
 
-        <!-- Suggestion chips from AI -->
-        <div
-          id="suggestions"
-          class="px-6 pt-3 pb-2 border-t border-slate-100 bg-slate-50/80 flex flex-wrap gap-2 text-sm"
-        >
-          <!-- diisi dinamis dari AI -->
-        </div>
-
-        <!-- Input area -->
-        <div
-          class="px-4 py-3 border-t border-slate-200 bg-white flex items-end gap-3"
-        >
-          <div class="flex-1 relative">
-            <textarea
-              id="prompt"
-              rows="1"
-              class="w-full resize-none rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 pr-10 text-sm outline-none focus:border-slate-400 focus:ring-1 focus:ring-slate-300"
-              placeholder="Tulis pesan atau tempelkan kode di sini..."
-            ></textarea>
-            <span
-              class="absolute right-3 bottom-2 text-[10px] text-slate-400 select-none"
-            >
-              Enter untuk kirim · Shift+Enter baris baru
-            </span>
+        <!-- INPUT -->
+        <div class="mt-2">
+          <div class="chat-input-wrapper d-flex align-items-center px-2">
+            <input id="prompt"
+                   class="form-control border-0 bg-transparent py-3"
+                   placeholder="Tulis pertanyaan atau instruksi kamu di sini..." />
+            <button id="sendBtn"
+                    class="btn btn-primary btn-send ms-2 d-flex align-items-center justify-content-center gap-1">
+              <span>Kirim</span>
+              <span class="d-none spinner-border spinner-border-sm" id="sendSpinner" role="status"
+                aria-hidden="true"></span>
+            </button>
           </div>
-          <button
-            id="sendBtn"
-            class="shrink-0 inline-flex items-center gap-2 rounded-2xl px-4 py-2.5 text-sm font-medium bg-slate-900 text-slate-50 hover:bg-slate-800 active:scale-[0.98] transition"
-          >
-            <span>Kirim</span>
-            <span class="text-xs">⮞</span>
-          </button>
-        </div>
-      </section>
-
-      <!-- SIDE PANEL (optional info / status) -->
-      <aside
-        class="hidden lg:flex w-72 flex-col gap-4 text-sm text-slate-600"
-      >
-        <div class="bg-white border border-slate-200 rounded-3xl p-4 shadow-sm">
-          <h2 class="text-xs font-semibold tracking-wide text-slate-500 uppercase">
-            Session Snapshot
-          </h2>
-          <div class="mt-3 space-y-3 text-xs">
-            <div class="flex items-center justify-between">
-              <span class="text-slate-500">Mode</span>
-              <span class="px-2 py-1 rounded-full bg-slate-100 text-slate-900">
-                Light only
-              </span>
-            </div>
-            <div class="flex items-center justify-between">
-              <span class="text-slate-500">Focus</span>
-              <span>Konsultasi, coding, & brainstorming</span>
-            </div>
+          <div class="d-flex justify-content-between mt-2 small text-muted">
+            <span>Tekan <kbd>Enter</kbd> untuk kirim.</span>
+            <span id="statusText"></span>
           </div>
         </div>
-
-        <div class="bg-white border border-slate-200 rounded-3xl p-4 shadow-sm">
-          <h2 class="text-xs font-semibold tracking-wide text-slate-500 uppercase">
-            Tips singkat
-          </h2>
-          <ul class="mt-3 space-y-2 list-disc list-inside text-xs">
-            <li>Berikan konteks singkat tentang tujuan kamu.</li>
-            <li>Untuk kode, sebutkan stack / framework yang dipakai.</li>
-            <li>Minta saran alternatif jika ingin eksplorasi ide baru.</li>
-          </ul>
-        </div>
-      </aside>
-    </main>
+      </div>
+    </div>
   </div>
 
+  <!-- Bootstrap JS (optional for some components) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Gemini + Chat Logic -->
   <script type="module">
     import { GoogleGenerativeAI } from "https://esm.run/@google/generative-ai";
 
-    const API_KEY = "AIzaSyBlyZScLwO6NnvfqiInNf2saHFajvI4-N8"; // TODO: ganti dengan API key kamu sendiri
+    // =========================================
+    //   KONFIGURASI GEMINI
+    // =========================================
+    const API_KEY = "YOUR_API_KEY_HERE"; // TODO: ganti dengan API key kamu
     const genAI = new GoogleGenerativeAI(API_KEY);
-    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+    const modelName = "gemini-2.5-flash";
+    const model = genAI.getGenerativeModel({ model: modelName });
 
+    // =========================================
+    //   ELEMENT DOM
+    // =========================================
     const chatBox = document.getElementById("chat-box");
     const promptInput = document.getElementById("prompt");
     const sendBtn = document.getElementById("sendBtn");
-    const suggestionsEl = document.getElementById("suggestions");
+    const sendSpinner = document.getElementById("sendSpinner");
+    const statusText = document.getElementById("statusText");
+    const suggestionsBox = document.getElementById("suggestions");
+    const refreshSuggestionsBtn = document.getElementById("refreshSuggestions");
+    const modelNameLabel = document.getElementById("model-name");
 
-    // -------------------------------
-    // Helper: buat elemen bubble chat
-    // -------------------------------
-    function addMessage(role, text) {
+    modelNameLabel.textContent = `Model: ${modelName}`;
+
+    // =========================================
+    //   UTILITY: SCROLL KE BAWAH
+    // =========================================
+    function scrollToBottom() {
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    // =========================================
+    //   UTILITY: TAMBAH PESAN
+    // =========================================
+    function addMessage(role, text, { isLoading = false } = {}) {
       const wrapper = document.createElement("div");
 
       if (role === "user") {
-        wrapper.className = "flex justify-end";
-      } else {
-        wrapper.className = "flex items-start gap-3";
-      }
-
-      const bubble = document.createElement("div");
-
-      if (role === "user") {
-        bubble.className =
-          "bg-slate-900 text-slate-50 px-4 py-3 rounded-2xl rounded-br-sm text-sm max-w-xl";
+        wrapper.className = "d-flex justify-content-end mb-3";
+        const bubble = document.createElement("div");
+        bubble.className = "chat-bubble chat-bubble-user shadow-sm";
         bubble.textContent = text;
         wrapper.appendChild(bubble);
       } else {
+        wrapper.className = "d-flex align-items-start gap-2 mb-3";
+
         const avatar = document.createElement("div");
-        avatar.className =
-          "shrink-0 bg-slate-900 w-8 h-8 rounded-full flex justify-center items-center text-[10px] font-semibold tracking-tight";
+        avatar.className = "ai-avatar";
         avatar.textContent = "AI";
 
-        bubble.className =
-          "bg-slate-100 text-slate-900 px-4 py-3 rounded-2xl rounded-tl-sm text-sm max-w-xl whitespace-pre-wrap";
-        bubble.textContent = text;
+        const bubble = document.createElement("div");
+        bubble.className = "chat-bubble chat-bubble-ai shadow-sm";
+
+        if (isLoading) {
+          bubble.innerHTML = `
+            <span class="placeholder-wave d-inline-block" style="width: 90%;">
+              <span class="placeholder col-10"></span>
+              <span class="placeholder col-7"></span>
+            </span>
+          `;
+        } else {
+          bubble.textContent = text;
+        }
 
         wrapper.appendChild(avatar);
         wrapper.appendChild(bubble);
       }
 
       chatBox.appendChild(wrapper);
-      chatBox.scrollTop = chatBox.scrollHeight;
+      scrollToBottom();
 
-      return { wrapper, bubble };
+      return wrapper;
     }
 
-    // -------------------------------
-    // Helper: render suggestion chips
-    // -------------------------------
-    function renderSuggestions(items) {
-      suggestionsEl.innerHTML = "";
-      if (!items || !items.length) return;
-
-      // Shuffle biar urutan random tiap kali
-      for (let i = items.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [items[i], items[j]] = [items[j], items[i]];
-      }
-
-      items.slice(0, 4).forEach((s) => {
-        const btn = document.createElement("button");
-        btn.className =
-          "px-3 py-1.5 rounded-full border border-slate-200 bg-white text-slate-700 hover:border-slate-400 text-xs inline-flex items-center gap-2 transition";
-        btn.textContent = s;
-        btn.addEventListener("click", () => handleSuggestionClick(s));
-        suggestionsEl.appendChild(btn);
-      });
-    }
-
-    function handleSuggestionClick(text) {
-      promptInput.value = text;
-      sendMessage();
-    }
-
-    // -------------------------------
-    // Generate suggestion dari AI
-    // -------------------------------
-    async function generateAISuggestions(userPrompt, aiReply) {
-      const systemPrompt = `
-Berdasarkan percakapan berikut (pertanyaan dan jawaban), buat 3 ide pertanyaan lanjutan dalam Bahasa Indonesia.
-Syarat:
-- Singkat, maksimal 10 kata
-- Relevan dengan topik
-- Format output HARUS hanya JSON array string, tanpa penjelasan lain
-Contoh: ["Pertanyaan 1", "Pertanyaan 2", "Pertanyaan 3"]
-`;
+    // =========================================
+    //   SUGGESTIONS: GENERATED BY AI
+    // =========================================
+    async function loadSuggestions() {
+      suggestionsBox.innerHTML =
+        `<span class="text-muted small">Mengambil saran dari AI...</span>`;
 
       try {
-        const result = await model.generateContent([
-          {
-            role: "user",
-            parts: [
-              {
-                text:
-                  systemPrompt +
-                  "\n\nPertanyaan: " +
-                  userPrompt +
-                  "\nJawaban: " +
-                  aiReply,
-              },
-            ],
-          },
-        ]);
+        const promptForSuggestions = `
+          Berikan 8 contoh pertanyaan singkat dan variatif dalam bahasa Indonesia
+          yang cocok untuk diajukan ke asisten AI seputar:
+          - pekerjaan & produktivitas,
+          - pemrograman / teknologi,
+          - pengembangan diri,
+          - ide kreatif.
 
-        let text = result.response.text().trim();
-        // bersihkan jika model pakai ```json ```
-        text = text.replace(/```json/gi, "").replace(/```/g, "").trim();
+          Jawab hanya dengan list poin tanpa nomor, satu pertanyaan per baris.
+        `;
 
-        const parsed = JSON.parse(text);
-        if (Array.isArray(parsed)) {
-          renderSuggestions(parsed.filter((x) => typeof x === "string"));
+        const result = await model.generateContent(promptForSuggestions);
+        const text = result.response.text();
+
+        let lines = text
+          .split(/\r?\n/)
+          .map((l) => l.replace(/^[-*\d.\s]+/, "").trim())
+          .filter((l) => l.length > 0);
+
+        if (!lines.length) {
+          throw new Error("Respons kosong dari model.");
         }
-      } catch (err) {
-        console.warn("Gagal membuat suggestion:", err);
+
+        // Acak urutan (random) dan ambil 4
+        lines = lines.sort(() => Math.random() - 0.5);
+        const selected = lines.slice(0, 4);
+
+        suggestionsBox.innerHTML = "";
+        selected.forEach((item) => {
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "btn btn-outline-secondary suggestion-chip px-3 py-1";
+          btn.textContent = item;
+          btn.onclick = () => {
+            promptInput.value = item;
+            sendMessage();
+          };
+          suggestionsBox.appendChild(btn);
+        });
+      } catch (error) {
+        console.error(error);
+        suggestionsBox.innerHTML =
+          `<span class="text-danger small">Gagal memuat saran. Coba klik "Acak ulang".</span>`;
       }
     }
 
-    // -------------------------------
-    // SEND MESSAGE
-    // -------------------------------
+    // =========================================
+    //   KIRIM PESAN
+    // =========================================
+    let isSending = false;
+
     async function sendMessage() {
       const prompt = promptInput.value.trim();
-      if (!prompt) return;
+      if (!prompt || isSending) return;
 
-      // clear suggestion lama biar ga misleading
-      suggestionsEl.innerHTML = "";
+      isSending = true;
+      statusText.textContent = "Mengirim...";
+      sendSpinner.classList.remove("d-none");
+      sendBtn.disabled = true;
 
+      // Tambah pesan user
       addMessage("user", prompt);
       promptInput.value = "";
-      promptInput.style.height = "auto";
 
-      const thinking = addMessage("ai", "⏳ Sedang berpikir...");
-
-      sendBtn.disabled = true;
-      sendBtn.classList.add("opacity-70", "cursor-not-allowed");
+      // Tambah bubble loading AI
+      const aiWrapper = addMessage("ai", "", { isLoading: true });
+      const aiBubble = aiWrapper.querySelector(".chat-bubble-ai");
 
       try {
         const result = await model.generateContent(prompt);
         const reply = result.response.text();
-        thinking.bubble.textContent = reply;
 
-        // generate suggestion lanjutan berdasarkan AI
-        generateAISuggestions(prompt, reply);
+        // Ganti isi bubble dengan jawaban AI
+        aiBubble.textContent = reply;
+        statusText.textContent = "Siap membantu ✨";
+
+        // Optionally: generate new suggestions kadang-kadang (random 30%)
+        if (Math.random() < 0.3) {
+          loadSuggestions();
+        }
       } catch (err) {
         console.error(err);
-        thinking.bubble.textContent = "❌ Terjadi error: " + err.message;
+        aiBubble.textContent = "❌ Terjadi kesalahan: " + err.message;
+        statusText.textContent = "Terjadi kesalahan.";
       } finally {
+        isSending = false;
+        sendSpinner.classList.add("d-none");
         sendBtn.disabled = false;
-        sendBtn.classList.remove("opacity-70", "cursor-not-allowed");
-        chatBox.scrollTop = chatBox.scrollHeight;
+        scrollToBottom();
       }
     }
 
-    // -------------------------------
-    // Textarea autosize + key handler
-    // -------------------------------
-    promptInput.addEventListener("input", () => {
-      promptInput.style.height = "auto";
-      promptInput.style.height = promptInput.scrollHeight + "px";
-    });
-
+    // =========================================
+    //   EVENT LISTENER
+    // =========================================
     sendBtn.addEventListener("click", sendMessage);
 
     promptInput.addEventListener("keydown", (e) => {
@@ -297,6 +438,17 @@ Contoh: ["Pertanyaan 1", "Pertanyaan 2", "Pertanyaan 3"]
         sendMessage();
       }
     });
+
+    refreshSuggestionsBtn.addEventListener("click", () => {
+      loadSuggestions();
+    });
+
+    // =========================================
+    //   INIT
+    // =========================================
+    statusText.textContent = "Menyiapkan saran dari AI...";
+    loadSuggestions();
   </script>
 </body>
-</html>
+
+</html
