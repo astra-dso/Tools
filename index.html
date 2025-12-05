@@ -10,6 +10,14 @@
     <!-- pdf-lib (manipulasi PDF) -->
     <script src="https://cdn.jsdelivr.net/npm/pdf-lib/dist/pdf-lib.min.js"></script>
 
+    <!-- pdf.js (GLOBAL, bukan module) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.min.js"></script>
+    <script>
+        // WAJIB: kasih tau lokasi worker pdf.js
+        pdfjsLib.GlobalWorkerOptions.workerSrc =
+            'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.worker.min.js';
+    </script>
+
     <style>
         body {
             font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -211,10 +219,7 @@
 </style>
 
 <!-- JS LOGIKA + PREVIEW + FUNGSI TOOLS -->
-<script type="module">
-    // pdf.js
-    import * as pdfjsLib from "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.min.mjs";
-
+<script>
     // ====== UTIL ======
     const logBox = document.getElementById('logContent');
     const clearLogBtn = document.getElementById('clearLog');
@@ -238,7 +243,7 @@
         URL.revokeObjectURL(url);
     }
 
-    // Preview PDF (halaman 1)
+    // Preview PDF (halaman 1) pakai pdfjsLib global
     async function previewPdfFile(file) {
         const canvas = document.getElementById('pdfPreviewCanvas');
         const meta = document.getElementById('pdfPreviewMeta');
