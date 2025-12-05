@@ -453,7 +453,7 @@
       color: var(--text-muted);
     }
 
-    /* CHAT BOX */
+    /* CHAT BOX (scroll only here) */
     #chat-box {
       flex: 1;
       overflow-y: auto;
@@ -461,7 +461,7 @@
       margin: 0 auto;
       width: 100%;
       max-width: 720px;
-      max-height: 70vh; /* scrollbar muncul saat history banyak */
+      max-height: 70vh;
     }
 
     .chat-bubble-row {
@@ -492,13 +492,43 @@
       box-shadow: 0 12px 30px rgba(37, 99, 235, 0.35);
     }
 
+    .ai-message-wrapper {
+      position: relative;
+      max-width: 100%;
+      flex: 1;
+    }
+
     .chat-bubble-ai {
       background-color: var(--bubble-ai);
       border-color: var(--border-soft);
       color: #111827;
       box-shadow: 0 10px 24px rgba(148, 163, 184, 0.25);
-      max-height: 340px;      /* kalau textnya panjang banget */
-      overflow-y: auto;       /* scrollbar di dalam bubble AI */
+    }
+
+    .ai-copy-btn {
+      position: absolute;
+      top: 6px;
+      right: 8px;
+      border: none;
+      border-radius: 999px;
+      padding: 2px 8px;
+      font-size: 0.7rem;
+      background: rgba(243, 244, 246, 0.9);
+      color: #4b5563;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+      opacity: 0;
+      transition: opacity 0.15s ease;
+    }
+
+    .ai-message-wrapper:hover .ai-copy-btn {
+      opacity: 1;
+    }
+
+    .ai-copy-btn:hover {
+      background: #e5e7eb;
     }
 
     .ai-avatar {
@@ -546,13 +576,8 @@
     }
 
     @keyframes shimmer {
-      0% {
-        background-position: 200% 0;
-      }
-
-      100% {
-        background-position: -200% 0;
-      }
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
     }
 
     /* INPUT AREA */
@@ -686,22 +711,16 @@
       display: none;
     }
 
-    @keyframes spin {
-      to {
-        transform: rotate(360deg);
-      }
-    }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
     /* SCROLLBAR */
     #chat-box::-webkit-scrollbar,
-    .suggestions::-webkit-scrollbar,
-    .chat-bubble-ai::-webkit-scrollbar {
+    .suggestions::-webkit-scrollbar {
       width: 6px;
     }
 
     #chat-box::-webkit-scrollbar-thumb,
-    .suggestions::-webkit-scrollbar-thumb,
-    .chat-bubble-ai::-webkit-scrollbar-thumb {
+    .suggestions::-webkit-scrollbar-thumb {
       background-color: #cbd5f5;
       border-radius: 999px;
     }
@@ -831,7 +850,6 @@
 
         <!-- BODY -->
         <main class="chat-body-modern">
-          <!-- Greeting card -->
           <div id="greetingCard" class="chat-greeting-card">
             <div class="greeting-icon">AI</div>
             <div class="greeting-text">
@@ -883,9 +901,6 @@
   <script type="module">
     import { GoogleGenerativeAI } from "https://esm.run/@google/generative-ai";
 
-    // ===============================
-    //   CONFIG
-    // ===============================
     const API_KEY = "AIzaSyBlyZScLwO6NnvfqiInNf2saHFajvI4-N8"; // ganti dengan API key kamu
     const MODEL_NAME = "gemini-2.5-flash";
     const genAI = new GoogleGenerativeAI(API_KEY);
@@ -893,9 +908,6 @@
 
     const HISTORY_KEY = "gemini_modern_chat_history_v1";
 
-    // ===============================
-    //   DOM ELEMENTS
-    // ===============================
     const chatBox = document.getElementById("chat-box");
     const promptInput = document.getElementById("prompt");
     const sendBtn = document.getElementById("sendBtn");
@@ -912,15 +924,9 @@
 
     modelNameLabel.textContent = MODEL_NAME;
 
-    // ===============================
-    //   STATE
-    // ===============================
     let isSending = false;
     let conversationHistory = [];
 
-    // ===============================
-    //   UTILS
-    // ===============================
     function scrollToBottom() {
       chatBox.scrollTop = chatBox.scrollHeight;
     }
@@ -973,7 +979,6 @@
       }
     }
 
-    // Hapus semua tanda ** dari teks supaya tidak tampil di UI
     function sanitizeText(text) {
       if (!text) return "";
       return text.replace(/\*\*/g, "");
@@ -984,7 +989,7 @@
       element.textContent = "";
       const chars = Array.from(clean);
       let index = 0;
-      const speed = 15; // ms per char
+      const speed = 15;
 
       const interval = setInterval(() => {
         if (index >= chars.length) {
@@ -998,9 +1003,22 @@
       }, speed);
     }
 
-    // ===============================
-    //   MESSAGE RENDERING
-    // ===============================
+    async function copyToClipboard(text) {
+      try {
+        await navigator.clipboard.writeText(text);
+        statusText.textContent = "Tersalin ke clipboard ✅";
+      } catch (e) {
+        // fallback
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        try { document.execCommand("copy"); } catch {}
+        document.body.removeChild(ta);
+        statusText.textContent = "Tersalin (fallback) ✅";
+      }
+    }
+
     function addMessage(role, text, { isLoading = false, animate = false } = {}) {
       const row = document.createElement("div");
       const isUser = role === "user";
@@ -1021,8 +1039,19 @@
         avatar.className = "ai-avatar";
         avatar.textContent = "AI";
 
+        const wrapper = document.createElement("div");
+        wrapper.className = "ai-message-wrapper";
+
         const bubble = document.createElement("div");
         bubble.className = "chat-bubble chat-bubble-ai";
+
+        const copyBtn = document.createElement("button");
+        copyBtn.type = "button";
+        copyBtn.className = "ai-copy-btn";
+        copyBtn.innerHTML = `<span>📋</span><span>Copy</span>`;
+        copyBtn.addEventListener("click", () => {
+          copyToClipboard(bubble.textContent || cleanText);
+        });
 
         if (isLoading) {
           bubble.innerHTML = `
@@ -1038,8 +1067,11 @@
           bubble.textContent = cleanText;
         }
 
+        wrapper.appendChild(bubble);
+        wrapper.appendChild(copyBtn);
+
         row.appendChild(avatar);
-        row.appendChild(bubble);
+        row.appendChild(wrapper);
         chatBox.appendChild(row);
         scrollToBottom();
         return { row, bubble };
@@ -1070,9 +1102,6 @@
       statusText.textContent = "Mulai percakapan baru ✨";
     }
 
-    // ===============================
-    //   SUGGESTIONS
-    // ===============================
     async function loadSuggestions() {
       suggestionsBox.innerHTML =
         `<span class="text-muted small">Mengambil saran dari AI...</span>`;
@@ -1102,7 +1131,6 @@
           throw new Error("Respons kosong dari model.");
         }
 
-        // Shuffle & pick up to 6
         lines = lines.sort(() => Math.random() - 0.5);
         const selected = lines.slice(0, 6);
 
@@ -1128,9 +1156,6 @@
       }
     }
 
-    // ===============================
-    //   SEND MESSAGE
-    // ===============================
     async function sendMessage() {
       const prompt = promptInput.value.trim();
       if (!prompt || isSending) return;
@@ -1138,13 +1163,11 @@
       setSendingState(true);
       greetingCard.style.display = "none";
 
-      // Tambah pesan user ke UI & history
       addMessage("user", prompt);
       conversationHistory.push({ role: "user", text: prompt });
       saveHistory();
       promptInput.value = "";
 
-      // Tambah bubble loading AI
       const { bubble } = addMessage("ai", "", { isLoading: true });
 
       try {
@@ -1173,9 +1196,6 @@
       }
     }
 
-    // ===============================
-    //   EVENTS
-    // ===============================
     sendBtn.addEventListener("click", sendMessage);
 
     promptInput.addEventListener("keydown", (e) => {
@@ -1199,9 +1219,6 @@
       statusText.textContent = "History chat dihapus.";
     });
 
-    // ===============================
-    //   INIT
-    // ===============================
     (function init() {
       statusText.textContent = "Menyiapkan saran dari AI...";
       conversationHistory = loadHistory();
