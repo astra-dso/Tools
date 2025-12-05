@@ -4,19 +4,11 @@
     <meta charset="UTF-8" />
     <title>PDF Tools - Frontend Only</title>
 
-    <!-- Tailwind -->
+   <!-- Tailwind -->
     <script src="https://cdn.tailwindcss.com"></script>
 
     <!-- pdf-lib (manipulasi PDF) -->
     <script src="https://cdn.jsdelivr.net/npm/pdf-lib/dist/pdf-lib.min.js"></script>
-
-    <!-- pdf.js (GLOBAL, bukan module) -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.min.js"></script>
-    <script>
-        // WAJIB: kasih tau lokasi worker pdf.js
-        pdfjsLib.GlobalWorkerOptions.workerSrc =
-            'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.worker.min.js';
-    </script>
 
     <style>
         body {
@@ -218,8 +210,14 @@
     }
 </style>
 
-<!-- JS LOGIKA + PREVIEW + FUNGSI TOOLS -->
-<script>
+<script type="module">
+    // Import pdf.js sebagai ES module
+    import * as pdfjsLib from "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.min.mjs";
+
+    // Set workerSrc (WAJIB supaya tidak error GlobalWorkerOptions)
+    pdfjsLib.GlobalWorkerOptions.workerSrc =
+        "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.worker.min.mjs";
+
     // ====== UTIL ======
     const logBox = document.getElementById('logContent');
     const clearLogBtn = document.getElementById('clearLog');
@@ -243,7 +241,7 @@
         URL.revokeObjectURL(url);
     }
 
-    // Preview PDF (halaman 1) pakai pdfjsLib global
+    // Preview PDF (halaman 1) pakai pdfjsLib dari import di atas
     async function previewPdfFile(file) {
         const canvas = document.getElementById('pdfPreviewCanvas');
         const meta = document.getElementById('pdfPreviewMeta');
@@ -301,6 +299,7 @@
 
     // ====== SEMUA TOOL FRONTEND-ONLY ======
     const tools = {
+        // ==== GABUNG PDF ====
         merge() {
             toolPanel.innerHTML = `
                 <div class="space-y-4">
@@ -377,6 +376,7 @@
             });
         },
 
+        // ==== SPLIT / EKSTRAK ====
         split() {
             toolPanel.innerHTML = `
                 <div class="space-y-4">
@@ -461,6 +461,7 @@
             });
         },
 
+        // ==== HAPUS HALAMAN ====
         deletePages() {
             toolPanel.innerHTML = `
                 <div class="space-y-4">
@@ -527,6 +528,7 @@
             });
         },
 
+        // ==== ATUR URUTAN ====
         reorder() {
             toolPanel.innerHTML = `
                 <div class="space-y-4">
@@ -590,6 +592,7 @@
             });
         },
 
+        // ==== PUTAR ====
         rotate() {
             toolPanel.innerHTML = `
                 <div class="space-y-4">
@@ -644,6 +647,7 @@
             });
         },
 
+        // ==== NOMOR HALAMAN ====
         pageNumbers() {
             toolPanel.innerHTML = `
                 <div class="space-y-4">
@@ -700,6 +704,7 @@
             });
         },
 
+        // ==== WATERMARK ====
         watermark() {
             toolPanel.innerHTML = `
                 <div class="space-y-4">
@@ -768,6 +773,7 @@
             });
         },
 
+        // ==== GAMBAR → PDF ====
         imagesToPdf() {
             toolPanel.innerHTML = `
                 <div class="space-y-4">
@@ -848,6 +854,7 @@
             });
         },
 
+        // ==== KOMPRES RINGAN ====
         compress() {
             toolPanel.innerHTML = `
                 <div class="space-y-4">
@@ -887,6 +894,7 @@
             });
         },
 
+        // ==== PDF → PNG ====
         pdfToImages() {
             toolPanel.innerHTML = `
                 <div class="space-y-4">
